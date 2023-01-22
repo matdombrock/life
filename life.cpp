@@ -21,10 +21,11 @@ class Cfg
 {
 public:
     const char * fileName = "out/life";
-    int delay = 8;
-    int frames = 1024*2;
-    int width = 256;//256
-    int height = 256;//256
+    int delay = 16;
+    int frames = 64;//1024*2;
+    int width = 32;//256
+    int height = 32;//256
+    int scale = 8;
 };
 
 void init(Pitri &dish, int t)
@@ -32,9 +33,10 @@ void init(Pitri &dish, int t)
     //Organism organism = Organisms::rune1;
     //dish.loadOrganism(Organisms::square3);
     //dish.loadOrganism(Organisms::square3,4,0);
-    //dish.loadOrganism(Organisms::square3,-4,0);
+    dish.loadOrganism(Organisms::square3,-3,-3);
+    dish.loadOrganism(Organisms::square3);
 
-    dish.randomize(t, 0.25f);
+    //dish.randomize(t, 0.25f);
 }
 
 void drawFrame1(Canvas &canvas, Cfg cfg)
@@ -53,15 +55,17 @@ int main()
 
     GifWriter g;
 
+    int outputW = cfg.width * cfg.scale;
+     int outputH = cfg.height * cfg.scale;
     std::time_t t = std::time(0);  // t is an integer type
     std::string fileName = cfg.fileName + std::to_string(t) + ".gif";// need to add timestamp
-    GifBegin(&g, fileName.c_str(), cfg.width, cfg.height, cfg.delay);
+    GifBegin(&g, fileName.c_str(), outputW, outputH, cfg.delay);
 
-    Canvas canvas(cfg.width, cfg.height);
+    Canvas canvas(cfg.width, cfg.height, cfg.scale);
     // Empty first frame
     drawFrame1(canvas, cfg);
     auto frame = canvas.getBuffer();
-    GifWriteFrame(&g, frame.data(), cfg.width, cfg.height, cfg.delay);
+    GifWriteFrame(&g, frame.data(), outputW, outputH, cfg.delay);
     
     Pitri dish(cfg.width, cfg.height);
 
@@ -89,7 +93,7 @@ int main()
 
         // Delay the first generation
         int delay = i == 0 ? cfg.delay * 4 : cfg.delay;
-		GifWriteFrame(&g, frame.data(), cfg.width, cfg.height, delay);
+		GifWriteFrame(&g, frame.data(), outputW, outputH, delay);
         if (living < 1){
             // all are dead
             std::cout << "!!!Population Death!!!" << std::endl;
