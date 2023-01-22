@@ -23,8 +23,8 @@ public:
     const char * fileName = "out/life";
     int delay = 16;
     int frames = 64;//1024*2;
-    int width = 32;//256
-    int height = 32;//256
+    int width = 64;//256
+    int height = 64;//256
     int scale = 8;
 };
 
@@ -33,10 +33,13 @@ void init(Pitri &dish, int t)
     //Organism organism = Organisms::rune1;
     //dish.loadOrganism(Organisms::square3);
     //dish.loadOrganism(Organisms::square3,4,0);
-    dish.loadOrganism(Organisms::square3,-3,-3);
-    dish.loadOrganism(Organisms::square3);
+    //dish.loadOrganism(Organisms::square3,-3,-3);
+    //dish.loadOrganism(Organisms::square3);
+    //dish.loadOrganism(Organisms::square3Osc);
+    dish.loadOrganism(Organisms::rune1A,0,-8);
+    dish.loadOrganism(Organisms::rune1A2,0,8);
 
-    //dish.randomize(t, 0.25f);
+    dish.randomize(t, 0.05f);
 }
 
 void drawFrame1(Canvas &canvas, Cfg cfg)
