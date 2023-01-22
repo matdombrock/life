@@ -34,7 +34,7 @@ void init(Pitri &dish, int t)
     //dish.loadOrganism(Organisms::square3,4,0);
     //dish.loadOrganism(Organisms::square3,-4,0);
 
-    dish.randomize(t, 0.75f);
+    dish.randomize(t, 0.25f);
 }
 
 void drawFrame1(Canvas &canvas, Cfg cfg)
