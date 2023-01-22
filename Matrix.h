@@ -15,11 +15,11 @@ class Matrix
 public:
     Matrix(int width, int height, int dataSize = 1)
     {
-        w = width;
-        h = height;
+        w = width * dataSize;
+        h = height * dataSize;
         ds = dataSize;
         defaultData = dataSize == 1 ? (std::vector<uint8_t>){1} : (std::vector<uint8_t>){255,255,255};
-        buffer.resize(w * h * dataSize);
+        buffer.resize(w * h);
         std::fill(buffer.begin(), buffer.end(), 0);
     }
     void clear()
@@ -39,6 +39,8 @@ public:
     void write(int x, int y, std::vector<uint8_t> data = {})
     {
         if (data.empty()){data = defaultData;}
+        x*=ds;
+        y*=ds;
         int index = getIndex(x,y);
         writeAtIndex(index, data);
     }
@@ -61,13 +63,31 @@ public:
     {
         return buffer.size();
     }
+    std::vector<int> getXY(int n)
+    {
+        n *= ds;
+        int x = (n % h);
+        int y = (n / w);
+        std::vector<int> res = {x,y};
+        return res;
+    }
 private:
     int getIndex(int x, int y)
     {
         // There are 4 items per pixel
-        // RGBA
-        x*=ds;
-        y*=ds;
+        // RGBAx
+        //x*=ds;
+        //y*=ds;// Was breaking
+        if(x >= w)
+        {
+            std::cout << "Offset Error" << std::endl;
+            //x = w-1;
+        }
+        if(y >= h)
+        {
+            std::cout << "Offset Error" << std::endl;
+            //y=h-1;
+        }
         return (w*y)+x;
     }
     void writeAtIndex(int n, std::vector<uint8_t> data)

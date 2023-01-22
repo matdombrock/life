@@ -22,9 +22,9 @@ class Cfg
 public:
     const char * fileName = "out/life";
     int delay = 8;
-    int frames = 1024*2;
-    int width = 256;//256
-    int height = 256;//256
+    int frames = 64;//1024*2;
+    int width = 64;//256
+    int height = 64;//256
 };
 
 void init(Pitri &dish, int t)
@@ -34,17 +34,20 @@ void init(Pitri &dish, int t)
     //dish.loadOrganism(Organisms::square3,4,0);
     //dish.loadOrganism(Organisms::square3,-4,0);
 
-    dish.randomize(t, 0.25f);
+    dish.loadOrganism(Organisms::square2, 10, 10, false);
+    dish.loadOrganism(Organisms::square2, 12, 12, false);
+
+    //dish.randomize(t, 0.25f);
 }
 
 void drawFrame1(Canvas &canvas, Cfg cfg)
 {
     // Empty first frame
     canvas.clear();
-    canvas.draw(0,0);
-    canvas.draw(cfg.width-1, 0);
-    canvas.draw(0,cfg.height-1);
-    canvas.draw(cfg.width-1,cfg.height-1);
+    //canvas.draw(0,0);
+    // canvas.draw(cfg.width-1, 0);
+    // canvas.draw(0,cfg.height-1);
+    // canvas.draw(cfg.width-1,cfg.height-1);
 }
 
 int main()
@@ -57,7 +60,7 @@ int main()
     std::string fileName = cfg.fileName + std::to_string(t) + ".gif";// need to add timestamp
     GifBegin(&g, fileName.c_str(), cfg.width, cfg.height, cfg.delay);
 
-    Canvas canvas(cfg.width, cfg.height);
+    Canvas canvas(cfg.width, cfg.height, 4);
     // Empty first frame
     drawFrame1(canvas, cfg);
     auto frame = canvas.getBuffer();
@@ -72,6 +75,10 @@ int main()
 		std::cout << "frame: "+std::to_string(i+1) << std::endl;
 
         canvas.clear();
+
+        //
+        //canvas.draw(0,64);
+        //
 
         auto dishBuffer = dish.getBuffer();
 
