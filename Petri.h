@@ -43,78 +43,91 @@ public:
         int living = 0;
         for (int i = 0; i < matrix.getSize(); i++)
         {
-            int neighbors = 0;
-            // ensure we can go up
+            // Define the indicies we need to check for this cell
             int up = i - w;
-            if (up >= 0)
+            int upLeft = up - 1;
+            int upRight = up + 1;
+            int down = i + w;
+            int downLeft = down - 1;
+            int downRight = down + 1;
+            int right = i + 1;
+            int left = i - 1;
+
+            // Define some flags
+            bool rowStart = i - 1 > i / w; // Are we at the start of a row?
+            bool rowEnd = (i % w) + 1 < w; // Are we at the end of a row?
+            bool rowFirst = up <= 0;// Are we on the first row?
+            bool rowLast = down >= matrix.getSize();// Are we on the last row?
+            
+            int neighbors = 0;
+            // Check Up
+            if (rowFirst == false)
             {
-                // we are safe to go up a row
-                // Check UP
+                // We are safe to go up a row
+                // Check Up
                 if (matrix.read(up) >= 1)
                 {
                     // We have a neighbor one row up
                     neighbors++;
                 }
-                // check up left
-                // ensure we are not at the start of the row
-                if (i - 1 > i / w)
+                // Check up left
+                // Ensure we are not at the start of the row
+                if (rowStart == false)
                 {
-                    if (matrix.read(up - 1) >= 1)
+                    if (matrix.read(upLeft) >= 1)
                     {
                         neighbors++;
                     }
                 }
-                // check up right
-                // ensure we are not at the end of the row
-                if ((i % w) + 1 < w || true)
+                // Check up right
+                // Ensure we are not at the end of the row
+                if (rowEnd == false)
                 {
-                    if (matrix.read(up + 1) >= 1)
+                    if (matrix.read(upRight) >= 1)
                     {
                         neighbors++;
                     }
                 }
             }
-            // ensure we can go right
-            int right = i + 1;
-            if ((i % w) + 1 < w || true)
+            // Check Right
+            if (rowEnd == false)
             {
                 if (matrix.read(right) >= 1)
                 {
                     neighbors++;
                 }
             }
-            // ensure we can go down
-            int down = i + w;
-            if (down < matrix.getSize())
+            // Check Down
+            if (rowLast == false)
             {
-                // we can go down
-                // check down
+                // We are safe to go down a row
+                // Check down
                 if (matrix.read(down) >= 1)
                 {
                     neighbors++;
                 }
-            }
-            // check down left
-            // ensure we are not at the start of the row
-            if (i - 1 > i / w)
-            {
-                if (matrix.read(down - 1) >= 1)
+                // Check down left
+                // Ensure we are not at the start of the row
+                if (rowStart == false)
                 {
-                    neighbors++;
+                    if (matrix.read(downLeft) >= 1)
+                    {
+                        neighbors++;
+                    }
+                }
+                // check down right
+                // ensure we are not at the end of the row
+                if (rowEnd == false)
+                {
+                    if (matrix.read(downRight) >= 1)
+                    {
+                        neighbors++;
+                    }
                 }
             }
-            // check down right
-            // ensure we are not at the end of the row
-            if ((i % w) + 1 < w || true)
-            {
-                if (matrix.read(down + 1) >= 1)
-                {
-                    neighbors++;
-                }
-            }
-            // ensure we can check left
-            int left = i - 1;
-            if (left > i / w)
+            
+            // Check Left
+            if (rowStart == false)
             {
                 if (matrix.read(left) >= 1)
                 {
