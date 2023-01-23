@@ -27,6 +27,12 @@ namespace Organisms
         1,1,
         1,1
     },2,2);
+    Organism square2Osc({
+        1,1,0,0,
+        1,1,0,0,
+        0,0,1,1,
+        0,0,1,1
+    },4,5);
     Organism square3({
         1,1,1,
         1,1,1,

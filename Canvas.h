@@ -22,7 +22,7 @@ public:
         {
             for (int xOff = 0; xOff < ps; xOff++)
             {
-                write(x+xOff, y+yOff, rgb);
+                writeXY(x+xOff, y+yOff, rgb);
             }
         }
     }
@@ -36,7 +36,7 @@ public:
         {
             for (int xOff = 0; xOff < ps; xOff++)
             {
-                write(x+xOff, y+yOff, rgb);
+                writeXY(x+xOff, y+yOff, rgb);
             }
         }
         //write(n, rgb);

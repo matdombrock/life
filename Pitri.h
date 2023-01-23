@@ -51,7 +51,7 @@ public:
             {
                 // we are safe to go up a row
                 // Check UP
-                if (matrix.read(up) == 1)
+                if (matrix.read(up) >= 1)
                 {
                     // We have a neighbor one row up
                     neighbors++;
@@ -60,7 +60,7 @@ public:
                 // ensure we are not at the start of the row
                 if (i - 1 > i / w)
                 {
-                    if (matrix.read(up - 1) == 1)
+                    if (matrix.read(up - 1) >= 1)
                     {
                         neighbors++;
                     }
@@ -69,7 +69,7 @@ public:
                 // ensure we are not at the end of the row
                 if ((i%w) + 1 < w || true)
                 {
-                    if (matrix.read(up + 1) == 1)
+                    if (matrix.read(up + 1) >= 1)
                     {
                         neighbors++;
                     }
@@ -79,7 +79,7 @@ public:
             int right = i + 1;
             if ((i % w) + 1 < w || true)
             {
-                if (matrix.read(right) == 1)
+                if (matrix.read(right) >= 1)
                 {
                     neighbors++;
                 }
@@ -90,7 +90,7 @@ public:
             {
                 // we can go down
                 // check down
-                if (matrix.read(down) == 1)
+                if (matrix.read(down) >= 1)
                 {
                     neighbors++;
                 }
@@ -99,7 +99,7 @@ public:
             // ensure we are not at the start of the row
             if (i - 1 > i / w)
             {
-                if (matrix.read(down - 1) == 1)
+                if (matrix.read(down - 1) >= 1)
                 {
                     neighbors++;
                 }
@@ -108,7 +108,7 @@ public:
             // ensure we are not at the end of the row
             if ((i%w) + 1 < w || true)
             {
-                if (matrix.read(down + 1) == 1)
+                if (matrix.read(down + 1) >= 1)
                 {
                     neighbors++;
                 }
@@ -117,25 +117,25 @@ public:
             int left = i - 1;
             if (left > i / w)
             {
-                if (matrix.read(left) == 1)
+                if (matrix.read(left) >= 1)
                 {
                     neighbors++;
                 }
             }
 
             // check if the cell is currently alive
-            auto isAlive = matrix.read(i);
+            auto cellState = matrix.read(i);
 
             if (neighbors < 2)
             {
                 //alive = 0;
-                if(isAlive > 0)
+                if(cellState > 0)
                 {
                     //std::cout << "die" << std::endl;
                     //std::cout << neighbors << std::endl;
                 }
                     
-                isAlive = 0;
+                cellState = 0;
             }
             if (neighbors == 2 || neighbors == 3)
             {
@@ -143,20 +143,23 @@ public:
             }
             if (neighbors > 3)
             {
-                isAlive = 0;
+                cellState = 0;
                 //std::cout << "overpop" << std::endl;
             }
             if (neighbors == 3)
             {
                 // born if empty
-                isAlive = 1;
+                cellState = 1;
                 //std::cout << "born" << std::endl;
             }
-            if (isAlive)
+            if (cellState)
             {
                 living++;
+                //
+                cellState++;
                 //matrix2.write(i, alive);
-                matrix2.write(i);
+                std::vector<uint8_t> data = {cellState};
+                matrix2.writeN(i, data);
             }
             
         }
@@ -205,6 +208,6 @@ private:
     }
     void aliveAtIndex(int n, std::vector<uint8_t> data = {1})
     {
-        matrix.write(n, data);
+        matrix.writeN(n, data);
     }
 };

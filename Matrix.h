@@ -36,13 +36,13 @@ public:
     }
     int getWidth() {return w;};
     int getHeight() {return h;};
-    void write(int x, int y, std::vector<uint8_t> data = {})
+    void writeXY(int x, int y, std::vector<uint8_t> data = {})
     {
         if (data.empty()){data = defaultData;}
         int index = getIndex(x,y);
         writeAtIndex(index, data);
     }
-    void write(int n, std::vector<uint8_t> data = {})
+    void writeN(int n, std::vector<uint8_t> data = {})
     {
         if (data.empty()){data = defaultData;}
         n *= ds;

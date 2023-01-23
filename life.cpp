@@ -21,8 +21,8 @@ class Cfg
 {
 public:
     const char * fileName = "out/life";
-    int delay = 16;
-    int frames = 64;//1024*2;
+    int delay = 32;
+    int frames = 128;//1024*2;
     int width = 64;//256
     int height = 64;//256
     int scale = 8;
@@ -36,10 +36,13 @@ void init(Pitri &dish, int t)
     //dish.loadOrganism(Organisms::square3,-3,-3);
     //dish.loadOrganism(Organisms::square3);
     //dish.loadOrganism(Organisms::square3Osc);
-    dish.loadOrganism(Organisms::rune1A,0,-8);
-    dish.loadOrganism(Organisms::rune1A2,0,8);
+    //dish.loadOrganism(Organisms::rune1A,0,-8);
+    //dish.loadOrganism(Organisms::rune1A2,0,8);
+    //dish.loadOrganism(Organisms::square3Osc);
 
-    dish.randomize(t, 0.05f);
+    //dish.loadOrganism(Organisms::square2);
+    //dish.randomize(t, 0.5f);
+    dish.loadOrganism(Organisms::rune1);
 }
 
 void drawFrame1(Canvas &canvas, Cfg cfg)
@@ -87,7 +90,10 @@ int main()
         {
             if (dishBuffer[ii] > 0)
             {
-                canvas.draw(ii);
+                uint8_t color = (dishBuffer[ii] * 64) < 255 ? (dishBuffer[ii] * 64) : 255;
+                uint8_t color2 = 255 - (dishBuffer[ii] * 64) > 0 ? 255 - (dishBuffer[ii] * 64) : 0;
+                std::vector<uint8_t> data = {color, 255, color2};
+                canvas.draw(ii, data);
             }
         }
         int living = dish.nextGen();
