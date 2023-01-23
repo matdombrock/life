@@ -19,7 +19,6 @@ It also holds logic for generating gifs
 #include "Organism.h"
 #include "Cfg.h"
 #include "CfgLoader.h"
-
 #include "util/CLIO.h"
 
 void init(Petri &dish)

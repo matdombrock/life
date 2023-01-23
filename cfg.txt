@@ -4,4 +4,4 @@ frames = 64
 width = 256
 height = 256
 scale = 4
-rules = dsts
+rules = dstd
