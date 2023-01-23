@@ -87,7 +87,7 @@ int main()
         {
             if (dishBuffer[ii] > 0)
             {
-                uint8_t color = (dishBuffer[ii] * 64) < 255 ? (dishBuffer[ii] * 64) : 255;
+                uint8_t color = (dishBuffer[ii] * 16) < 255 ? (dishBuffer[ii] * 16) : 255;
                 uint8_t color2 = 255 - (dishBuffer[ii] * 64) > 0 ? 255 - (dishBuffer[ii] * 64) : 0;
                 std::vector<uint8_t> data = {color, 255, color2};
                 canvas.draw(ii, data);
