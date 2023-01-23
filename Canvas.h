@@ -1,5 +1,6 @@
 /*
 A simple canvas class used for draw frames of the final image
+Inherits the matrix class
 */
 #include <vector>
 #include "Matrix.h"

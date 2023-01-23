@@ -5,7 +5,7 @@ A class and namespace for holding starter organisms
 #pragma once
 #include <vector>
 #include <cstdint>
-#include "Pitri.h"
+#include "Petri.h"
 
 class Organism
 {

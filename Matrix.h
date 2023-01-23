@@ -9,6 +9,7 @@ This is the basic building block for the simulation as well as the graphics outp
 #include <iostream>
 #include <vector>
 #include <cstdint>
+#include "util/CLIO.h"
 
 class Matrix
 {
@@ -18,7 +19,7 @@ public:
         w = width;
         h = height;
         ds = dataSize;
-        defaultData = dataSize == 1 ? (std::vector<uint8_t>){1} : (std::vector<uint8_t>){255,255,255};
+        defaultData = dataSize == 1 ? (std::vector<uint8_t>) {1} : (std::vector<uint8_t>){255,255,255};
         buffer.resize(w * h * dataSize);
         std::fill(buffer.begin(), buffer.end(), 0);
     }
@@ -64,8 +65,6 @@ public:
 private:
     int getIndex(int x, int y)
     {
-        // There are 4 items per pixel
-        // RGBA
         x*=ds;
         y*=ds;
         return (w*y)+x;
@@ -92,7 +91,7 @@ private:
         }
         else
         {
-            std::cout << "Error: Bad data size!" << std::endl;
+            CLIO::print("Error: Bad data size!");
         }
     }
     int w;

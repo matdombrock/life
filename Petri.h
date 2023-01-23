@@ -1,16 +1,19 @@
 /*
 Contains the actual Game of Life logic
+This uses 2 instances of the Matrix class
+But does not inherit the class itself (like Canvas)
 */
 
 #pragma once
 #include <vector>
 #include "Matrix.h"
 #include "Organism.h"
+#include "util/CLIO.h"
 
-class Pitri
+class Petri
 {
 public:
-    Pitri(int width, int height) : matrix(width, height), matrix2(width, height)
+    Petri(int width, int height) : matrix(width, height), matrix2(width, height)
     {
         w = width;
         h = height;
@@ -18,12 +21,12 @@ public:
     void randomize(unsigned seed, float f = 0.5f)
     {
         std::srand(seed);
-        f = 1 - f;// invert
+        f = 1 - f; // invert
         for (int i = 0; i < matrix2.getSize(); i++)
         {
             uint8_t rand = (std::rand() > (RAND_MAX * f)) ? 1 : 0;
 
-            if(rand)
+            if (rand)
             {
                 alive(i);
             }
@@ -35,10 +38,6 @@ public:
     }
     int nextGen()
     {
-        //
-        // This logis is messy and needs to be cleaned up
-        //
-
         // clear the next gen buffer
         matrix2.clear();
         int living = 0;
@@ -67,7 +66,7 @@ public:
                 }
                 // check up right
                 // ensure we are not at the end of the row
-                if ((i%w) + 1 < w || true)
+                if ((i % w) + 1 < w || true)
                 {
                     if (matrix.read(up + 1) >= 1)
                     {
@@ -86,7 +85,7 @@ public:
             }
             // ensure we can go down
             int down = i + w;
-            if(down < matrix.getSize())
+            if (down < matrix.getSize())
             {
                 // we can go down
                 // check down
@@ -106,7 +105,7 @@ public:
             }
             // check down right
             // ensure we are not at the end of the row
-            if ((i%w) + 1 < w || true)
+            if ((i % w) + 1 < w || true)
             {
                 if (matrix.read(down + 1) >= 1)
                 {
@@ -128,63 +127,59 @@ public:
 
             if (neighbors < 2)
             {
-                //alive = 0;
-                if(cellState > 0)
+                // alive = 0;
+                if (cellState > 0)
                 {
-                    //std::cout << "die" << std::endl;
-                    //std::cout << neighbors << std::endl;
+                    // std::cout << "die" << std::endl;
+                    // std::cout << neighbors << std::endl;
                 }
-                    
+
                 cellState = 0;
             }
             if (neighbors == 2 || neighbors == 3)
             {
-                //alive = alive;
+                // alive = alive;
             }
             if (neighbors > 3)
             {
                 cellState = 0;
-                //std::cout << "overpop" << std::endl;
+                // std::cout << "overpop" << std::endl;
             }
             if (neighbors == 3)
             {
                 // born if empty
                 cellState = 1;
-                //std::cout << "born" << std::endl;
+                // std::cout << "born" << std::endl;
             }
             if (cellState)
             {
                 living++;
                 //
                 cellState++;
-                //matrix2.write(i, alive);
+                // matrix2.write(i, alive);
                 std::vector<uint8_t> data = {cellState};
                 matrix2.writeN(i, data);
             }
-            
         }
         // copy the buffer back to the original
-        matrix.clone( matrix2 );
+        matrix.clone(matrix2);
         return living;
     }
-    int getWidth() {return w;};
-    int getHeight() {return h;};
     void alive(int x, int y, std::vector<uint8_t> data = {1})
     {
-        int index = getIndex(x,y);
+        int index = getIndex(x, y);
         aliveAtIndex(index, data);
     }
     void alive(int n, std::vector<uint8_t> data = {1})
     {
-        //n *= 4; ???
         aliveAtIndex(n, data);
     }
-    void loadOrganism(Organism organism, int xOff=0, int yOff=0, bool center = true)
+    void loadOrganism(Organism organism, int xOff = 0, int yOff = 0, bool center = true)
     {
         if (center)
         {
-            xOff = ( w / 2 ) - ( organism.width / 2) + xOff;
-            yOff = ( h / 2 ) - ( organism.height / 2) + yOff;
+            xOff = (w / 2) - (organism.width / 2) + xOff;
+            yOff = (h / 2) - (organism.height / 2) + yOff;
         }
         int i = 0;
         for (int y = 0; y < organism.height; y++)
@@ -192,11 +187,14 @@ public:
             for (int x = 0; x < organism.width; x++)
             {
                 auto data = organism.data[i];
-                alive(x+xOff,y+yOff, {data});
+                alive(x + xOff, y + yOff, {data});
                 i++;
             }
         }
     }
+    int getWidth() { return w; };
+    int getHeight() { return h; };
+
 private:
     int w;
     int h;
@@ -204,7 +202,7 @@ private:
     Matrix matrix2;
     int getIndex(int x, int y, std::vector<uint8_t> data = {1})
     {
-        return (w*y)+x;
+        return (w * y) + x;
     }
     void aliveAtIndex(int n, std::vector<uint8_t> data = {1})
     {

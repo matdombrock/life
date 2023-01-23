@@ -2,10 +2,11 @@
 This is the main entry point
 
 This is responsible for iterating through generations
-The actual GOL logic is in `Pitri.h`
+The actual GOL logic is in `Petri.h`
 
 It also holds logic for generating gifs
 */
+
 #include <vector>
 #include <cstdint>
 #include <iostream>
@@ -14,33 +15,24 @@ It also holds logic for generating gifs
 #include "lib/gif.h"
 #include "Matrix.h"
 #include "Canvas.h"
-#include "Pitri.h"
+#include "Petri.h"
 #include "Organism.h"
+
+#include "util/CLIO.h"
 
 class Cfg
 {
 public:
     const char * fileName = "out/life";
     int delay = 32;
-    int frames = 128;//1024*2;
-    int width = 64;//256
-    int height = 64;//256
+    int frames = 128;
+    int width = 64;
+    int height = 64;
     int scale = 8;
 };
 
-void init(Pitri &dish, int t)
+void init(Petri &dish, int t)
 {
-    //Organism organism = Organisms::rune1;
-    //dish.loadOrganism(Organisms::square3);
-    //dish.loadOrganism(Organisms::square3,4,0);
-    //dish.loadOrganism(Organisms::square3,-3,-3);
-    //dish.loadOrganism(Organisms::square3);
-    //dish.loadOrganism(Organisms::square3Osc);
-    //dish.loadOrganism(Organisms::rune1A,0,-8);
-    //dish.loadOrganism(Organisms::rune1A2,0,8);
-    //dish.loadOrganism(Organisms::square3Osc);
-
-    //dish.loadOrganism(Organisms::square2);
     //dish.randomize(t, 0.5f);
     dish.loadOrganism(Organisms::rune1);
 }
@@ -55,37 +47,49 @@ void drawFrame1(Canvas &canvas, Cfg cfg)
     canvas.draw(cfg.width-1,cfg.height-1);
 }
 
+
+const char * buildFileName(std::string fileName, int timestamp)
+{
+    std::string newName = fileName + std::to_string(timestamp) + ".gif";// need to add timestamp
+    return newName.c_str();
+}
+
 int main()
 {
     Cfg cfg;
 
     GifWriter g;
 
-    int outputW = cfg.width * cfg.scale;
-     int outputH = cfg.height * cfg.scale;
+    // Get the current timestamp
     std::time_t t = std::time(0);  // t is an integer type
-    std::string fileName = cfg.fileName + std::to_string(t) + ".gif";// need to add timestamp
-    GifBegin(&g, fileName.c_str(), outputW, outputH, cfg.delay);
+
+    auto fileName = buildFileName(cfg.fileName, t);
+
+    int outputW = cfg.width * cfg.scale;
+    int outputH = cfg.height * cfg.scale;
+    GifBegin(&g, fileName, outputW, outputH, cfg.delay);
 
     Canvas canvas(cfg.width, cfg.height, cfg.scale);
+    
     // Empty first frame
     drawFrame1(canvas, cfg);
     auto frame = canvas.getBuffer();
     GifWriteFrame(&g, frame.data(), outputW, outputH, cfg.delay);
     
-    Pitri dish(cfg.width, cfg.height);
+    Petri dish(cfg.width, cfg.height);
 
     init(dish, t);
     
 	for(int i = 0; i < cfg.frames; i++)
 	{
-		std::cout << "frame: "+std::to_string(i+1) << std::endl;
+		
+        CLIO::print("frame: "+std::to_string(i+1));
 
         canvas.clear();
 
         auto dishBuffer = dish.getBuffer();
 
-        // Draw the pitri dish to the buffer
+        // Draw the Petri dish to the buffer
         for (int ii = 0; ii < dishBuffer.size(); ii++)
         {
             if (dishBuffer[ii] > 0)
@@ -105,7 +109,7 @@ int main()
 		GifWriteFrame(&g, frame.data(), outputW, outputH, delay);
         if (living < 1){
             // all are dead
-            std::cout << "!!!Population Death!!!" << std::endl;
+            CLIO::print("!!!Population Death!!!");
             break;
         }
 	}
