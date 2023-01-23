@@ -47,13 +47,6 @@ void drawFrame1(Canvas &canvas, Cfg cfg)
     canvas.draw(cfg.width-1,cfg.height-1);
 }
 
-
-const char * buildFileName(std::string fileName, int timestamp)
-{
-    std::string newName = fileName + std::to_string(timestamp) + ".gif";// need to add timestamp
-    return newName.c_str();
-}
-
 int main()
 {
     Cfg cfg;
@@ -63,11 +56,11 @@ int main()
     // Get the current timestamp
     std::time_t t = std::time(0);  // t is an integer type
 
-    auto fileName = buildFileName(cfg.fileName, t);
+    std::string fileName = cfg.fileName + std::to_string(t) + ".gif";// need to add timestamp
 
     int outputW = cfg.width * cfg.scale;
     int outputH = cfg.height * cfg.scale;
-    GifBegin(&g, fileName, outputW, outputH, cfg.delay);
+    GifBegin(&g, fileName.c_str(), outputW, outputH, cfg.delay);
 
     Canvas canvas(cfg.width, cfg.height, cfg.scale);
     
