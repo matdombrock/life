@@ -21,9 +21,9 @@ It also holds logic for generating gifs
 #include "CfgLoader.h"
 #include "util/CLIO.h"
 
-void init(Petri &dish)
+void init(Petri &dish, time_t t)
 {
-    //dish.randomize(t, 0.5f);
+    dish.randomize(t, 0.5f);
     dish.loadOrganism(Organisms::rune1);
 }
 
@@ -61,7 +61,7 @@ int main()
     
     Petri dish(cfg.width, cfg.height, cfg.ruleSet);
 
-    init(dish);
+    init(dish, t);
     
 	for(int i = 0; i < cfg.frames; i++)
 	{

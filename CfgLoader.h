@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <algorithm>
+#include "Petri.h"
 #include "util/CLIO.h"
 #include "util/FileIO.h"
 #include "Cfg.h"
@@ -56,5 +57,22 @@ public:
         }
         CLIO::print("Loaded config file!");
         return cfg;
+    }
+    static void setup(Petri &dish)
+    {
+        // sets up the dish
+        std::vector<std::string> cfgText = FileIO::readLines("./cfg.txt");
+        if(cfgText.empty())
+        {
+            return;
+        }
+        for(std::string line : cfgText)
+        {
+            if (line[0] == '>')
+            {
+                //std::string name = line.substr(1, line.find(','));
+                std::string name = line.substr(1, line.size()-1);
+            }
+        }
     }
 };
