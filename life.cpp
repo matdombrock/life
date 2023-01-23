@@ -17,20 +17,10 @@ It also holds logic for generating gifs
 #include "Canvas.h"
 #include "Petri.h"
 #include "Organism.h"
+#include "Cfg.h"
+#include "CfgLoader.h"
 
 #include "util/CLIO.h"
-
-class Cfg
-{
-public:
-    const char * fileName = "out/life";
-    int delay = 16;
-    int frames = 64;
-    int width = 256;
-    int height = 256;
-    int scale = 4;
-    char ruleSet[4] = {'d','s','t','d'};// game of life = {'d','s','t','d'}
-};
 
 void init(Petri &dish)
 {
@@ -50,7 +40,7 @@ void drawFrame1(Canvas &canvas, Cfg cfg)
 
 int main()
 {
-    Cfg cfg;
+    Cfg cfg = CfgLoader::load();
 
     GifWriter g;
 

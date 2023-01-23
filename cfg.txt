@@ -1,0 +1,7 @@
+file = out/life
+delay = 16
+frames = 64
+width = 256
+height = 256
+scale = 4
+rules = dsts
