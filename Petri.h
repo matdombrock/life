@@ -6,6 +6,8 @@ But does not inherit the class itself (like Canvas)
 
 #pragma once
 #include <vector>
+#include <map>
+//#include <iterator>
 #include "Matrix.h"
 #include "Organism.h"
 #include "util/CLIO.h"
@@ -13,10 +15,14 @@ But does not inherit the class itself (like Canvas)
 class Petri
 {
 public:
-    Petri(int width, int height) : matrix(width, height), matrix2(width, height)
+    Petri(int width, int height, char newRuleSet[4]) : matrix(width, height), matrix2(width, height)
     {
         w = width;
         h = height;
+        ruleSet[0] = newRuleSet[0];
+        ruleSet[1] = newRuleSet[1];
+        ruleSet[2] = newRuleSet[2];
+        ruleSet[3] = newRuleSet[3];
     }
     void randomize(unsigned seed, float f = 0.5f)
     {
@@ -36,12 +42,17 @@ public:
     {
         return matrix.getBuffer();
     }
-    void birth(std::uint8_t &cellState)
+    void thrive(std::uint8_t &cellState, bool force = false)
     {
         // The cell is born
-        cellState = cellState < 1 ? 1 : cellState;
+        if ( force == true)
+        {
+            cellState = 1;
+            return;
+        }
+        cellState = cellState < 1 ? 1 : cellState + 1;
     }
-    void thrive(std::uint8_t &cellState)
+    void survive(std::uint8_t &cellState)
     {
         // The cell lives happily 
         // But only if it is alive
@@ -51,6 +62,12 @@ public:
     void death(std::uint8_t &cellState)
     {
         cellState = 0;
+    }
+    void runRule(char rule, std::uint8_t &cellState)
+    {
+        if (rule == 'd'){death(cellState);}
+        else if (rule == 's'){survive(cellState);}
+        else if (rule == 't'){thrive(cellState);}
     }
     int nextGen()
     {
@@ -101,23 +118,21 @@ public:
 
             if (neighbors < 2)
             {
-                // Death by under pop
-                death(cellState);
+                runRule(ruleSet[0], cellState);
             }
-            if (neighbors == 2 || neighbors == 3)
+            if (neighbors == 2)
             {
-                thrive(cellState);
+                runRule(ruleSet[1], cellState);
             }
             if (neighbors == 3)
             {
-                birth(cellState);
+                runRule(ruleSet[2], cellState);
             }
             if (neighbors > 3)
             {
-                // Death by over pop
-                death(cellState);
+                runRule(ruleSet[3], cellState);
             }
-            //
+
             if (cellState > 0){living++;}
             //
             std::vector<uint8_t> data = {cellState};
@@ -162,6 +177,7 @@ private:
     int h;
     Matrix matrix;
     Matrix matrix2;
+    char ruleSet[4];
     int getIndex(int x, int y, std::vector<uint8_t> data = {1})
     {
         return (w * y) + x;

@@ -24,14 +24,15 @@ class Cfg
 {
 public:
     const char * fileName = "out/life";
-    int delay = 32;
-    int frames = 128;
-    int width = 64;
-    int height = 64;
-    int scale = 8;
+    int delay = 16;
+    int frames = 64;
+    int width = 256;
+    int height = 256;
+    int scale = 4;
+    char ruleSet[4] = {'d','s','t','d'};// game of life = {'d','s','t','d'}
 };
 
-void init(Petri &dish, int t)
+void init(Petri &dish)
 {
     //dish.randomize(t, 0.5f);
     dish.loadOrganism(Organisms::rune1);
@@ -69,9 +70,9 @@ int main()
     auto frame = canvas.getBuffer();
     GifWriteFrame(&g, frame.data(), outputW, outputH, cfg.delay);
     
-    Petri dish(cfg.width, cfg.height);
+    Petri dish(cfg.width, cfg.height, cfg.ruleSet);
 
-    init(dish, t);
+    init(dish);
     
 	for(int i = 0; i < cfg.frames; i++)
 	{
