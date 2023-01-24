@@ -106,9 +106,14 @@ int main()
         {
             CLIO::print("pre: "+std::to_string(i+1));
         }
-        if (analysis.living < 1){
+        if (analysis.popDeath){
             // all are dead
             CLIO::print("!!!Population Death!!!");
+            break;
+        }
+        if (analysis.frozen){
+            // all are dead
+            CLIO::print("!!!Population Frozen!!!");
             break;
         }
 	}

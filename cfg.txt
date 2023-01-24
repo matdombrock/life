@@ -2,15 +2,15 @@ file = life
 delay = 16
 frames = 64
 pre = 0
-width = 64
-height = 64
+width = 48
+height = 48
 scale = 8
 pallet = rainbow3
 rules = dstd
 ---
 # .sorg settings
 ---
-sorg = rune1
+sorg = test4
 #sorg_center = 0
 #sorg_x = 1
 #sorg_y = 1

@@ -32,6 +32,8 @@ public:
     {
         avgNeighbors = MathTools::avgVec(neighborsVec);
         avgAge = MathTools::avgVec(ageVec);
+        frozen = births == 0 && deaths == 0;
+        popDeath = living == 0;
     }
     int births = 0;
     int deaths = 0;
@@ -39,6 +41,8 @@ public:
     double avgNeighbors = 0;
     double avgAge = 0;
     int peakAge = 0;
+    bool frozen = false;
+    bool popDeath = false;
 private:
     std::vector<int> neighborsVec;
     std::vector<int> ageVec;
@@ -57,6 +61,8 @@ public:
         aliveVec.push_back(generation.living);
         generationsCount++;
         peakAgeVec.push_back(generation.peakAge);
+        frozen = generation.frozen;
+        popDeath = generation.popDeath;
     }
     void finalize()
     {
@@ -115,7 +121,7 @@ public:
             xVals.push_back(i);
         }
         std::string xValsS = StringTools::vecToString(xVals);
-        
+
         out += "const xValues = [" + xValsS + "];";
         out += "const births = [" + birthsVecS + "];";
         out += "const deaths = [" + deathsVecS + "];";
@@ -206,6 +212,8 @@ Chart.defaults.global.defaultFontColor = "#fff";
         out += "final_alive: " + std::to_string(finalAlive) + "</br>";
         out += "births: " + std::to_string(births) + "</br>";
         out += "deaths: " + std::to_string(deaths) + "</br>";
+        out += "froze: " + std::to_string(frozen) + "</br>";
+        out += "population_died: " + std::to_string(popDeath) + "</br>";
         out += "</p>";
         
         out += "</br>";
@@ -239,6 +247,10 @@ private:
     int deaths = 0;
     int finalAlive = 0;
     int generationsCount = 0;
+    //
+    bool frozen = false;
+    bool popDeath = false;
+    //
     std::vector<double> ageVec;
     std::vector<double> peakAgeVec;
     std::vector<double> neighborsVec;

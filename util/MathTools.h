@@ -6,6 +6,10 @@ public:
     template <typename T=double>
     static double avgVec(std::vector<T> vec)
     {
+        if(vec.size() == 0)
+        {
+            return 0;
+        }
         double sum = 0;
         for(auto item : vec)
         {

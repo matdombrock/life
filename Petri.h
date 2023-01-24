@@ -51,7 +51,7 @@ public:
             cellState = 1;
             return;
         }
-        cellState = cellState < 1 ? 1 : cellState + 1;
+        cellState++;
     }
     void survive(std::uint8_t &cellState)
     {
@@ -75,7 +75,6 @@ public:
         GenerationAnalysis analysis;
         // clear the next gen buffer
         matrix2.clear();
-        int living = 0;
         for (int i = 0; i < matrix.getSize(); i++)
         {
             // Define the indicies we need to check for this cell
@@ -143,9 +142,9 @@ public:
                 analysis.death();
             }
             // Check if the cell was born
-            if (wasAlive && cellState > 0)
+            if (!wasAlive && cellState > 0)
             {
-                // Died
+                // Born
                 analysis.birth();
             }
             if (cellState > 0)
@@ -154,7 +153,6 @@ public:
             }
 
             if (cellState > 0){
-                living++;// dont need to track this
                 analysis.setAge(cellState);
                 analysis.setNeighbors(neighbors);
             }
