@@ -124,6 +124,9 @@ This file would be calculated to have a `width` of 4 and a `height` of 4.
 
 # Analysis Files
 
+## Graphing Tool
+http://www.graphreader.com/plotter
+
 ## Analysis Example
 ```
 generations: 128

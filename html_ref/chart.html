@@ -1,0 +1,90 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+</head>
+<body>
+<canvas id="myChart" style="max-width:90vw; margin: 0 auto"></canvas>
+<hr>
+<style>
+    html{
+        background:black;
+        color:white;
+        font-family:monospace;
+        padding:2rem;
+        text-align: center;
+    }
+    img{
+        width:55vw; 
+        max-width:90vw; 
+    }
+    p{
+        padding:1rem;
+        text-align: left;
+    }
+</style>
+<script>
+//
+//
+//
+const xValues = [50,60,70,80,90,100,110,120,130,140,150];
+const births = [7,8,8,9,9,9,10,11,14,14,15];
+const deaths = [7,8,8,9,9,9,10,11,14,14,15];
+const alive = [7,8,8,9,9,9,10,11,14,14,15];
+const age = [7,8,8,9,9,9,10,11,14,14,15];
+const neighbors = [7,8,8,9,9,9,10,11,14,14,15];
+//
+// Part 2
+//
+new Chart('myChart', {
+  type: 'line',
+  data: {
+    labels: xValues,
+    datasets: [
+        {
+            backgroundColor: 'rgba(255,255,255,1.0)',
+            borderColor: 'rgba(100,255,100,1.0)',
+            data: births,
+            label: "Births",
+            fill:false
+        },
+        {
+            backgroundColor: 'rgba(255,255,255,1.0)',
+            borderColor: 'rgba(255,100,100,1.0)',
+            data: deaths,
+            label: "Deaths",
+            fill:false
+        },
+        {
+            backgroundColor: 'rgba(255,255,255,1.0)',
+            borderColor: 'rgba(100,100,255,1.0)',
+            data: alive,
+            label: "Alive",
+            fill:false
+        },
+        {
+            backgroundColor: 'rgba(255,255,255,1.0)',
+            borderColor: 'rgba(255,100,255,1.0)',
+            data: age,
+            label: "Age",
+            fill:false,
+            hidden: true,
+        },
+        {
+            backgroundColor: 'rgba(255,255,255,1.0)',
+            borderColor: 'rgba(100,255,255,1.0)',
+            data: neighbors,
+            label: "Neighbors",
+            fill:false,
+            hidden: true,
+        },
+    ]
+  },
+  options:{}
+});
+Chart.defaults.global.defaultFontColor = "#fff";
+</script>
+<!---->
+</body> 

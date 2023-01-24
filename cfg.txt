@@ -1,17 +1,16 @@
 file = life
 delay = 16
-frames = 128
+frames = 32
 pre = 0
 width = 64
 height = 64
 scale = 8
-pallet = white
-copy_cfg = 1
-rules = dstd
+pallet = rainbow3
+rules = dttd
 ---
 # .sorg settings
 ---
-sorg = rune1
+sorg = noise
 #sorg_center = 0
 #sorg_x = 1
 #sorg_y = 1

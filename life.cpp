@@ -56,8 +56,7 @@ int main()
 
     std::string fileName = cfg.fileName + std::to_string(t);// need to add timestamp
     std::string fileNameGif = "out/" + fileName + ".gif";
-    std::string fileNameCfg = "out/" + fileName + ".cfg.txt";
-    std::string fileNameAna = "out/" + fileName + ".ana.txt";
+    std::string fileNameAna = "out/" + fileName + ".html";
 
     int outputW = cfg.width * cfg.scale;
     int outputH = cfg.height * cfg.scale;
@@ -116,16 +115,11 @@ int main()
 
 	GifEnd(&g);
     finalAnalysis.finalize();
-    finalAnalysis.save(fileNameAna);
+    finalAnalysis.save(fileNameAna, fileName);
 
     CLIO::print("---");
     CLIO::print("DONE!");
     CLIO::print("Saved to:      "+fileNameGif);
     CLIO::print("Analysis at:   "+fileNameAna);
-    if (cfg.copyCfg)
-    {
-        FileIO::copy("./cfg.txt", fileNameCfg);
-        CLIO::print("Cfg at:        "+fileNameCfg);
-    }
 	return 0;
 }

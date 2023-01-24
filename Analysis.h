@@ -69,36 +69,148 @@ public:
         births = MathTools::sumVec(birthsVec);
         deaths = MathTools::sumVec(deathsVec);
     }
-    void save(std::string fileName)
+    void save(std::string fileNameAna, std::string fileName)
     {
+        std::string birthsVecS = StringTools::vecToString(birthsVec);
+        std::string deathsVecS = StringTools::vecToString(deathsVec);
+        std::string aliveVecS = StringTools::vecToString(aliveVec);
+        std::string ageVecS = StringTools::vecToString(ageVec);
+        std::string neighborsVecS = StringTools::vecToString(neighborsVec);
+
+        std::vector<int> xVals;
+        for(int i = 0; i < generationsCount; i++)
+        {
+            xVals.push_back(i);
+        }
+        std::string xValsS = StringTools::vecToString(xVals);
+
         std::string out;
-        out += "generations: " + std::to_string(generationsCount) + "\r\n";
-        out += "avg_age: " + std::to_string(avgAge) + "\r\n";
-        out += "avg_neighbors: " + std::to_string(avgNeighbors) + "\r\n";
-        out += "avg_births: " + std::to_string(avgBirths) + "\r\n";
-        out += "avg_deaths: " + std::to_string(avgDeaths) + "\r\n";
-        out += "final_alive: " + std::to_string(finalAlive) + "\r\n";
-        out += "births: " + std::to_string(births) + "\r\n";
-        out += "deaths: " + std::to_string(deaths) + "\r\n";
+        out += R"(
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+</head>
+<body>
+<canvas id="myChart" style="max-width:90vw; margin: 0 auto"></canvas>
+<hr>
+<style>
+    html{
+        background:black;
+        color:white;
+        font-family:monospace;
+        padding:2rem;
+        text-align: center;
+    }
+    img{
+        width:55vw; 
+        max-width:90vw; 
+    }
+    p{
+        padding:1rem;
+        text-align: left;
+    }
+</style>
+<script>
+)";
+        out += "const xValues = [" + xValsS + "];";
+        out += "const births = [" + birthsVecS + "];";
+        out += "const deaths = [" + deathsVecS + "];";
+        out += "const alive = [" + aliveVecS + "];";
+        out += "const age = [" + ageVecS + "];";
+        out += "const neighbors = [" + neighborsVecS + "];";
+        out += R"(
+new Chart('myChart', {
+  type: 'line',
+  data: {
+    labels: xValues,
+    datasets: [
+        {
+            backgroundColor: 'rgba(255,255,255,1.0)',
+            borderColor: 'rgba(100,255,100,1.0)',
+            data: births,
+            label: "Births",
+            fill:false
+        },
+        {
+            backgroundColor: 'rgba(255,255,255,1.0)',
+            borderColor: 'rgba(255,100,100,1.0)',
+            data: deaths,
+            label: "Deaths",
+            fill:false
+        },
+        {
+            backgroundColor: 'rgba(255,255,255,1.0)',
+            borderColor: 'rgba(100,100,255,1.0)',
+            data: alive,
+            label: "Alive",
+            fill:false
+        },
+        {
+            backgroundColor: 'rgba(255,255,255,1.0)',
+            borderColor: 'rgba(255,100,255,1.0)',
+            data: age,
+            label: "Age",
+            fill:false,
+            hidden: true,
+        },
+        {
+            backgroundColor: 'rgba(255,255,255,1.0)',
+            borderColor: 'rgba(100,255,255,1.0)',
+            data: neighbors,
+            label: "Neighbors",
+            fill:false,
+            hidden: true,
+        },
+    ]
+  },
+  options:{}
+});
+Chart.defaults.global.defaultFontColor = "#fff";
+</script>
+)";
+       
+        out += "<img src='"+fileName+".gif'><br>";
 
-        out += "------- \r\n";
+        out += "<hr>";
 
-        out += "age_vector: \r\n";;
-        out += StringTools::vecToString(ageVec) + "\r\n";
+        out += "<p>";
+        out += "--- </br>";
+        out += "Final Analysis: </br>";
+        out += "--- </br>";
+        out += "</br>";
+        out += "generations: " + std::to_string(generationsCount) + "</br>";
+        out += "avg_age: " + std::to_string(avgAge) + "</br>";
+        out += "avg_neighbors: " + std::to_string(avgNeighbors) + "</br>";
+        out += "avg_births: " + std::to_string(avgBirths) + "</br>";
+        out += "avg_deaths: " + std::to_string(avgDeaths) + "</br>";
+        out += "final_alive: " + std::to_string(finalAlive) + "</br>";
+        out += "births: " + std::to_string(births) + "</br>";
+        out += "deaths: " + std::to_string(deaths) + "</br>";
+        out += "</p>";
+        
+        out += "</br>";
+        out += "<hr>";
 
-        out += "neighbors_vector: \r\n";
-        out += StringTools::vecToString(neighborsVec) + "\r\n";
+        out += "<p>";
+        out += "--- </br>";
+        out += "cfg.txt </br>";
+        out += "--- </br>";
+        out += "</br>";
 
-        out += "births_vector:\r\n";
-        out += StringTools::vecToString(birthsVec) + "\r\n";
+        std::vector<std::string> cfgLines = FileIO::readLines("./cfg.txt");
+        for (auto line : cfgLines)
+        {
+            out += line + "</br>";
+        }
 
-        out += "deaths_vector:\r\n";
-        out += StringTools::vecToString(deathsVec) + "\r\n";
-
-        out += "alive_vector:\r\n";
-        out += StringTools::vecToString(aliveVec) + "\r\n";
-
-        FileIO::write(fileName, out);
+        out += "</p>";
+        out += "</body>";
+        
+        
+        FileIO::write(fileNameAna, out);
     }
 private:
     double avgAge = 0;

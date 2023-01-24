@@ -22,7 +22,6 @@ public:
     bool sorgCenter = true;
     int sorgXOff = 0;
     int sorgYOff = 0;
-    bool copyCfg = false;
     char ruleSet[4] = {'d','s','t','d'};// game of life = {'d','s','t','d'}
 };
 
@@ -98,10 +97,6 @@ public:
             else if (key == "sorg_y")
             {
                 cfg.sorgYOff = std::stoi(val);
-            }
-            else if (key == "copy_cfg")
-            {
-                cfg.copyCfg = (bool)std::stoi(val);
             }
             else if (key == "rules")
             {
