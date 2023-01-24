@@ -35,4 +35,26 @@ public:
     {
         return a > b ? a : b;
     }
+    // Returns the smallest number in a vector
+    template <typename T=double>
+    static T minVec(std::vector<T> vec)
+    {
+        T out;
+        for (T item : vec)
+        {
+            out = min(item, out);
+        }
+        return out;
+    }
+    // Returns the largest number in a vector
+    template <typename T=double>
+    static T maxVec(std::vector<T> vec)
+    {
+        T out;
+        for (T item : vec)
+        {
+            out = max(item, out);
+        }
+        return out;
+    }
 };

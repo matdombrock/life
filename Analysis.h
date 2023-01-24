@@ -7,10 +7,6 @@
 class GenerationAnalysis
 {
 public:
-    void analyzeCell(int neighbors, int age, bool died, bool born, bool alive){
-        neighborsVec.push_back(neighbors);
-        ageVec.push_back(age);
-    }
     void death()
     {
         deaths++;
@@ -30,6 +26,7 @@ public:
     void setAge(int count)
     {
         ageVec.push_back(count);
+        peakAge = MathTools::max(count, peakAge);
     }
     void finalize()
     {
@@ -41,6 +38,7 @@ public:
     int living = 0;
     double avgNeighbors = 0;
     double avgAge = 0;
+    int peakAge = 0;
 private:
     std::vector<int> neighborsVec;
     std::vector<int> ageVec;
@@ -58,6 +56,7 @@ public:
         deathsVec.push_back(generation.deaths);
         aliveVec.push_back(generation.living);
         generationsCount++;
+        peakAgeVec.push_back(generation.peakAge);
     }
     void finalize()
     {
@@ -68,22 +67,10 @@ public:
         births = MathTools::sumVec(birthsVec);
         deaths = MathTools::sumVec(deathsVec);
         finalAlive = aliveVec[MathTools::max((int)aliveVec.size() - 1, 0)];
+        peakAge = MathTools::maxVec(peakAgeVec);
     }
     void save(std::string fileNameAna, std::string fileName)
     {
-        std::string birthsVecS = StringTools::vecToString(birthsVec);
-        std::string deathsVecS = StringTools::vecToString(deathsVec);
-        std::string aliveVecS = StringTools::vecToString(aliveVec);
-        std::string ageVecS = StringTools::vecToString(ageVec);
-        std::string neighborsVecS = StringTools::vecToString(neighborsVec);
-
-        std::vector<int> xVals;
-        for(int i = 0; i < generationsCount; i++)
-        {
-            xVals.push_back(i);
-        }
-        std::string xValsS = StringTools::vecToString(xVals);
-
         std::string out;
         out += R"(
 <head>
@@ -115,11 +102,26 @@ public:
 </style>
 <script>
 )";
+        std::string birthsVecS = StringTools::vecToString(birthsVec);
+        std::string deathsVecS = StringTools::vecToString(deathsVec);
+        std::string aliveVecS = StringTools::vecToString(aliveVec);
+        std::string ageVecS = StringTools::vecToString(ageVec);
+        std::string peakAgeVecS = StringTools::vecToString(peakAgeVec);
+        std::string neighborsVecS = StringTools::vecToString(neighborsVec);
+
+        std::vector<int> xVals;
+        for(int i = 0; i < generationsCount; i++)
+        {
+            xVals.push_back(i);
+        }
+        std::string xValsS = StringTools::vecToString(xVals);
+        
         out += "const xValues = [" + xValsS + "];";
         out += "const births = [" + birthsVecS + "];";
         out += "const deaths = [" + deathsVecS + "];";
         out += "const alive = [" + aliveVecS + "];";
         out += "const age = [" + ageVecS + "];";
+        out += "const peakAge = [" + peakAgeVecS + "];";
         out += "const neighbors = [" + neighborsVecS + "];";
         out += R"(
 new Chart('myChart', {
@@ -150,9 +152,17 @@ new Chart('myChart', {
         },
         {
             backgroundColor: 'rgba(255,255,255,1.0)',
-            borderColor: 'rgba(255,100,255,1.0)',
+            borderColor: 'rgba(255,100,155,1.0)',
             data: age,
-            label: "Age",
+            label: "Avg. Age",
+            fill:false,
+            hidden: true,
+        },
+        {
+            backgroundColor: 'rgba(255,255,255,1.0)',
+            borderColor: 'rgba(255,255,100,1.0)',
+            data: peakAge,
+            label: "Peak Age",
             fill:false,
             hidden: true,
         },
@@ -188,6 +198,7 @@ Chart.defaults.global.defaultFontColor = "#fff";
         out += "--- </br>";
         out += "</br>";
         out += "generations: " + std::to_string(generationsCount) + "</br>";
+        out += "peak_age: " + std::to_string(peakAge) + "</br>";
         out += "avg_age: " + std::to_string(avgAge) + "</br>";
         out += "avg_neighbors: " + std::to_string(avgNeighbors) + "</br>";
         out += "avg_births: " + std::to_string(avgBirths) + "</br>";
@@ -220,6 +231,7 @@ Chart.defaults.global.defaultFontColor = "#fff";
     }
 private:
     double avgAge = 0;
+    int peakAge = 0;
     double avgNeighbors = 0;
     double avgBirths = 0;
     double avgDeaths = 0;
@@ -228,6 +240,7 @@ private:
     int finalAlive = 0;
     int generationsCount = 0;
     std::vector<double> ageVec;
+    std::vector<double> peakAgeVec;
     std::vector<double> neighborsVec;
     std::vector<double> birthsVec;
     std::vector<double> deathsVec;
