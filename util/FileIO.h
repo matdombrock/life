@@ -18,7 +18,7 @@ public:
         std::string text;
         while(std::getline(fileReader, text))
         {
-            out += text;
+            out += text + "\r\n";
         }
         fileReader.close();
         return out;
@@ -34,6 +34,18 @@ public:
         }
         fileReader.close();
         return out;
+    }
+    static void copy(std::string fileName, std::string fileName2)
+    {
+        std::ifstream fileReader(fileName);
+        std::ofstream file2(fileName2);
+        std::string text;
+        while(std::getline(fileReader, text))
+        {
+            file2 << text << std::endl;
+        }
+        file2.close();
+        fileReader.close();
     }
     static void write(std::string fileName, std::string content)
     {

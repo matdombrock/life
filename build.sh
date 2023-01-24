@@ -1,2 +1,2 @@
 #! /bin/bash
-g++ life.cpp -o out/life && ./out/life
+g++ life.cpp -o life

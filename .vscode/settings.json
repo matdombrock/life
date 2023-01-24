@@ -48,5 +48,8 @@
         "map": "cpp",
         "xtree": "cpp",
         "algorithm": "cpp"
-    }
+    },
+    "cSpell.words": [
+        "sorg"
+    ]
 }

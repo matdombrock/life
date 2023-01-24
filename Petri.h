@@ -10,6 +10,7 @@ But does not inherit the class itself (like Canvas)
 //#include <iterator>
 #include "Matrix.h"
 #include "Organism.h"
+#include "Analysis.h"
 #include "util/CLIO.h"
 
 class Petri
@@ -69,8 +70,9 @@ public:
         else if (rule == 's'){survive(cellState);}
         else if (rule == 't'){thrive(cellState);}
     }
-    int nextGen()
+    GenerationAnalysis nextGen()
     {
+        GenerationAnalysis analysis;
         // clear the next gen buffer
         matrix2.clear();
         int living = 0;
@@ -115,6 +117,7 @@ public:
 
             // check if the cell is currently alive
             auto cellState = matrix.read(i);
+            bool wasAlive = cellState > 0;
 
             if (neighbors < 2)
             {
@@ -133,14 +136,36 @@ public:
                 runRule(ruleSet[3], cellState);
             }
 
-            if (cellState > 0){living++;}
+            // Check if the cell died
+            if (wasAlive && cellState < 1)
+            {
+                // Died
+                analysis.death();
+            }
+            // Check if the cell was born
+            if (wasAlive && cellState > 0)
+            {
+                // Died
+                analysis.birth();
+            }
+            if (cellState > 0)
+            {
+                analysis.alive();
+            }
+
+            if (cellState > 0){
+                living++;// dont need to track this
+                analysis.setAge(cellState);
+                analysis.setNeighbors(neighbors);
+            }
             //
             std::vector<uint8_t> data = {cellState};
             matrix2.writeN(i, data);
         }
+        analysis.finalize();
         // copy the buffer back to the original
         matrix.clone(matrix2);
-        return living;
+        return analysis;
     }
     void alive(int x, int y, std::vector<uint8_t> data = {1})
     {
@@ -171,7 +196,6 @@ public:
     }
     int getWidth() { return w; };
     int getHeight() { return h; };
-
 private:
     int w;
     int h;
