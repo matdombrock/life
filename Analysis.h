@@ -52,7 +52,6 @@ public:
     std::vector<GenerationAnalysis> generations;
     void analyze(GenerationAnalysis generation)
     {
-        finalAlive += generation.living;
         ageVec.push_back(generation.avgAge);
         neighborsVec.push_back(generation.avgNeighbors);
         birthsVec.push_back(generation.births);
@@ -68,6 +67,7 @@ public:
         avgDeaths = MathTools::avgVec(deathsVec);
         births = MathTools::sumVec(birthsVec);
         deaths = MathTools::sumVec(deathsVec);
+        finalAlive = aliveVec[MathTools::max((int)aliveVec.size() - 1, 0)];
     }
     void save(std::string fileNameAna, std::string fileName)
     {
