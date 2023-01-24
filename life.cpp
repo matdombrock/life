@@ -17,24 +17,22 @@ It also holds logic for generating gifs
 #include "Canvas.h"
 #include "Petri.h"
 #include "Organism.h"
-
+#include "SorgLoader.h"
+#include "CfgLoader.h"
+#include "Analysis.h"
+#include "util/Colorizer.h"
 #include "util/CLIO.h"
+#include "util/FileIO.h"
 
-class Cfg
+void init(Petri &dish, Cfg cfg, time_t t)
 {
-public:
-    const char * fileName = "out/life";
-    int delay = 32;
-    int frames = 128;
-    int width = 64;
-    int height = 64;
-    int scale = 8;
-};
-
-void init(Petri &dish, int t)
-{
-    //dish.randomize(t, 0.5f);
-    dish.loadOrganism(Organisms::rune1);
+    if(cfg.sorg == "noise")
+    {
+        CLIO::print("Generating noise...");
+        dish.randomize(t, 0.5f);
+        return;
+    }
+    SorgLoader::load(dish, "sorgs/"+cfg.sorg+".sorg", cfg.sorgXOff, cfg.sorgYOff, cfg.sorgCenter);
 }
 
 void drawFrame1(Canvas &canvas, Cfg cfg)
@@ -47,44 +45,39 @@ void drawFrame1(Canvas &canvas, Cfg cfg)
     canvas.draw(cfg.width-1,cfg.height-1);
 }
 
-
-const char * buildFileName(std::string fileName, int timestamp)
-{
-    std::string newName = fileName + std::to_string(timestamp) + ".gif";// need to add timestamp
-    return newName.c_str();
-}
-
 int main()
 {
-    Cfg cfg;
+    Cfg cfg = CfgLoader::load();
 
     GifWriter g;
 
     // Get the current timestamp
     std::time_t t = std::time(0);  // t is an integer type
 
-    auto fileName = buildFileName(cfg.fileName, t);
+    std::string fileName = cfg.fileName + std::to_string(t);// need to add timestamp
+    std::string fileNameGif = "out/" + fileName + ".gif";
+    std::string fileNameCfg = "out/" + fileName + ".cfg.txt";
+    std::string fileNameAna = "out/" + fileName + ".ana.txt";
 
     int outputW = cfg.width * cfg.scale;
     int outputH = cfg.height * cfg.scale;
-    GifBegin(&g, fileName, outputW, outputH, cfg.delay);
+    GifBegin(&g, fileNameGif.c_str(), outputW, outputH, cfg.delay);
 
     Canvas canvas(cfg.width, cfg.height, cfg.scale);
     
     // Empty first frame
-    drawFrame1(canvas, cfg);
+    //drawFrame1(canvas, cfg);
     auto frame = canvas.getBuffer();
     GifWriteFrame(&g, frame.data(), outputW, outputH, cfg.delay);
     
-    Petri dish(cfg.width, cfg.height);
+    Petri dish(cfg.width, cfg.height, cfg.ruleSet);
 
-    init(dish, t);
+    FinalAnalysis finalAnalysis;
+
+    init(dish, cfg, t);
     
-	for(int i = 0; i < cfg.frames; i++)
+	for(int i = 0; i < cfg.frames + cfg.pre; i++)
 	{
-		
-        CLIO::print("frame: "+std::to_string(i+1));
-
         canvas.clear();
 
         auto dishBuffer = dish.getBuffer();
@@ -94,20 +87,27 @@ int main()
         {
             if (dishBuffer[ii] > 0)
             {
-                uint8_t color = (dishBuffer[ii] * 64) < 255 ? (dishBuffer[ii] * 64) : 255;
-                uint8_t color2 = 255 - (dishBuffer[ii] * 64) > 0 ? 255 - (dishBuffer[ii] * 64) : 0;
-                std::vector<uint8_t> data = {color, 255, color2};
-                canvas.draw(ii, data);
+                std::vector<uint8_t> pixel = Colorizer::colorPixel(dishBuffer[ii], cfg.pallet);
+                canvas.draw(ii, pixel);
             }
         }
-        int living = dish.nextGen();
+        GenerationAnalysis analysis = dish.nextGen();
+        finalAnalysis.analyze(analysis);
 
         auto frame = canvas.getBuffer();
 
         // Delay the first generation
-        int delay = i == 0 ? cfg.delay * 4 : cfg.delay;
-		GifWriteFrame(&g, frame.data(), outputW, outputH, delay);
-        if (living < 1){
+        if(i >= cfg.pre)
+        {
+            CLIO::print("frame: "+std::to_string(i+1-cfg.pre));
+            int delay = (i - cfg.pre) == 0 ? cfg.delay * 4 : cfg.delay;
+		    GifWriteFrame(&g, frame.data(), outputW, outputH, delay);
+        }
+        else
+        {
+            CLIO::print("pre: "+std::to_string(i+1));
+        }
+        if (analysis.living < 1){
             // all are dead
             CLIO::print("!!!Population Death!!!");
             break;
@@ -115,6 +115,17 @@ int main()
 	}
 
 	GifEnd(&g);
+    finalAnalysis.finalize();
+    finalAnalysis.save(fileNameAna);
 
+    CLIO::print("---");
+    CLIO::print("DONE!");
+    CLIO::print("Saved to:      "+fileNameGif);
+    CLIO::print("Analysis at:   "+fileNameAna);
+    if (cfg.copyCfg)
+    {
+        FileIO::copy("./cfg.txt", fileNameCfg);
+        CLIO::print("Cfg at:        "+fileNameCfg);
+    }
 	return 0;
 }

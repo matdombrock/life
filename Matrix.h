@@ -19,7 +19,9 @@ public:
         w = width;
         h = height;
         ds = dataSize;
-        defaultData = dataSize == 1 ? (std::vector<uint8_t>) {1} : (std::vector<uint8_t>){255,255,255};
+        std::vector<uint8_t> ds1 = {1};
+        std::vector<uint8_t> ds4 = {255,255,255};
+        defaultData = dataSize == 1 ? ds1 : ds4;
         buffer.resize(w * h * dataSize);
         std::fill(buffer.begin(), buffer.end(), 0);
     }

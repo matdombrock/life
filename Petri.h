@@ -6,17 +6,24 @@ But does not inherit the class itself (like Canvas)
 
 #pragma once
 #include <vector>
+#include <map>
+//#include <iterator>
 #include "Matrix.h"
 #include "Organism.h"
+#include "Analysis.h"
 #include "util/CLIO.h"
 
 class Petri
 {
 public:
-    Petri(int width, int height) : matrix(width, height), matrix2(width, height)
+    Petri(int width, int height, char newRuleSet[4]) : matrix(width, height), matrix2(width, height)
     {
         w = width;
         h = height;
+        ruleSet[0] = newRuleSet[0];
+        ruleSet[1] = newRuleSet[1];
+        ruleSet[2] = newRuleSet[2];
+        ruleSet[3] = newRuleSet[3];
     }
     void randomize(unsigned seed, float f = 0.5f)
     {
@@ -36,134 +43,129 @@ public:
     {
         return matrix.getBuffer();
     }
-    int nextGen()
+    void thrive(std::uint8_t &cellState, bool force = false)
     {
+        // The cell is born
+        if ( force == true)
+        {
+            cellState = 1;
+            return;
+        }
+        cellState = cellState < 1 ? 1 : cellState + 1;
+    }
+    void survive(std::uint8_t &cellState)
+    {
+        // The cell lives happily 
+        // But only if it is alive
+        // No cells are born
+        cellState = cellState > 0 ? cellState + 1 : cellState;
+    }
+    void death(std::uint8_t &cellState)
+    {
+        cellState = 0;
+    }
+    void runRule(char rule, std::uint8_t &cellState)
+    {
+        if (rule == 'd'){death(cellState);}
+        else if (rule == 's'){survive(cellState);}
+        else if (rule == 't'){thrive(cellState);}
+    }
+    GenerationAnalysis nextGen()
+    {
+        GenerationAnalysis analysis;
         // clear the next gen buffer
         matrix2.clear();
         int living = 0;
         for (int i = 0; i < matrix.getSize(); i++)
         {
-            int neighbors = 0;
-            // ensure we can go up
+            // Define the indicies we need to check for this cell
             int up = i - w;
-            if (up >= 0)
-            {
-                // we are safe to go up a row
-                // Check UP
-                if (matrix.read(up) >= 1)
-                {
-                    // We have a neighbor one row up
-                    neighbors++;
-                }
-                // check up left
-                // ensure we are not at the start of the row
-                if (i - 1 > i / w)
-                {
-                    if (matrix.read(up - 1) >= 1)
-                    {
-                        neighbors++;
-                    }
-                }
-                // check up right
-                // ensure we are not at the end of the row
-                if ((i % w) + 1 < w || true)
-                {
-                    if (matrix.read(up + 1) >= 1)
-                    {
-                        neighbors++;
-                    }
-                }
-            }
-            // ensure we can go right
-            int right = i + 1;
-            if ((i % w) + 1 < w || true)
-            {
-                if (matrix.read(right) >= 1)
-                {
-                    neighbors++;
-                }
-            }
-            // ensure we can go down
+            int upLeft = up - 1;
+            int upRight = up + 1;
             int down = i + w;
-            if (down < matrix.getSize())
-            {
-                // we can go down
-                // check down
-                if (matrix.read(down) >= 1)
-                {
-                    neighbors++;
-                }
-            }
-            // check down left
-            // ensure we are not at the start of the row
-            if (i - 1 > i / w)
-            {
-                if (matrix.read(down - 1) >= 1)
-                {
-                    neighbors++;
-                }
-            }
-            // check down right
-            // ensure we are not at the end of the row
-            if ((i % w) + 1 < w || true)
-            {
-                if (matrix.read(down + 1) >= 1)
-                {
-                    neighbors++;
-                }
-            }
-            // ensure we can check left
+            int downLeft = down - 1;
+            int downRight = down + 1;
+            int right = i + 1;
             int left = i - 1;
-            if (left > i / w)
-            {
-                if (matrix.read(left) >= 1)
-                {
-                    neighbors++;
-                }
-            }
+
+            // Define some flags
+            bool rowStart = i % w == 0;// Are we at the start of a row?
+            bool rowEnd = ( i + 1) % w == 0;// Are we at the end of a row?
+            bool rowFirst = up <= 0;// Are we on the first row?
+            bool rowLast = down >= matrix.getSize()-1;// Are we on the last row?
+            
+            int neighbors = 0;
+
+            //
+            // Up
+            if(!rowFirst && matrix.read(up) >= 1) {neighbors++;}
+            // Up Left
+            if(!rowFirst && !rowStart && matrix.read(upLeft) >= 1) {neighbors++;}
+            // Up Right
+            if(!rowFirst && !rowEnd && matrix.read(upRight) >= 1) {neighbors++;}
+            // Down
+            if(!rowLast && matrix.read(down) >= 1) {neighbors++;}
+            // Down Left
+            if(!rowLast && !rowStart && matrix.read(downLeft) >= 1) {neighbors++;}
+            // Down Right
+            if(!rowLast && !rowEnd && matrix.read(downRight) >= 1) {neighbors++;}
+            // Right
+            if(!rowEnd && matrix.read(right) >= 1) {neighbors++;}
+            // Right
+            if(!rowStart && matrix.read(left) >= 1) {neighbors++;}
+            //
 
             // check if the cell is currently alive
             auto cellState = matrix.read(i);
+            bool wasAlive = cellState > 0;
 
             if (neighbors < 2)
             {
-                // alive = 0;
-                if (cellState > 0)
-                {
-                    // std::cout << "die" << std::endl;
-                    // std::cout << neighbors << std::endl;
-                }
-
-                cellState = 0;
+                runRule(ruleSet[0], cellState);
             }
-            if (neighbors == 2 || neighbors == 3)
+            if (neighbors == 2)
             {
-                // alive = alive;
-            }
-            if (neighbors > 3)
-            {
-                cellState = 0;
-                // std::cout << "overpop" << std::endl;
+                runRule(ruleSet[1], cellState);
             }
             if (neighbors == 3)
             {
-                // born if empty
-                cellState = 1;
-                // std::cout << "born" << std::endl;
+                runRule(ruleSet[2], cellState);
             }
-            if (cellState)
+            if (neighbors > 3)
             {
-                living++;
-                //
-                cellState++;
-                // matrix2.write(i, alive);
-                std::vector<uint8_t> data = {cellState};
-                matrix2.writeN(i, data);
+                runRule(ruleSet[3], cellState);
             }
+
+            // Check if the cell died
+            if (wasAlive && cellState < 1)
+            {
+                // Died
+                analysis.death();
+            }
+            // Check if the cell was born
+            if (wasAlive && cellState > 0)
+            {
+                // Died
+                analysis.birth();
+            }
+            if (cellState > 0)
+            {
+                analysis.alive();
+            }
+
+            if (cellState > 0){
+                living++;// dont need to track this
+                analysis.setAge(cellState);
+                analysis.setNeighbors(neighbors);
+            }
+            //
+            std::vector<uint8_t> data = {cellState};
+            matrix2.writeN(i, data);
         }
+        analysis.finalize();
         // copy the buffer back to the original
         matrix.clone(matrix2);
-        return living;
+        return analysis;
     }
     void alive(int x, int y, std::vector<uint8_t> data = {1})
     {
@@ -194,12 +196,12 @@ public:
     }
     int getWidth() { return w; };
     int getHeight() { return h; };
-
 private:
     int w;
     int h;
     Matrix matrix;
     Matrix matrix2;
+    char ruleSet[4];
     int getIndex(int x, int y, std::vector<uint8_t> data = {1})
     {
         return (w * y) + x;
