@@ -166,7 +166,13 @@ new Chart('myChart', {
         },
     ]
   },
-  options:{}
+  options:{
+    elements: {
+        line: {
+            tension: 0
+        }
+    }
+  }
 });
 Chart.defaults.global.defaultFontColor = "#fff";
 </script>
