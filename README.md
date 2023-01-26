@@ -1,11 +1,23 @@
-A Cellular Automaton simulator in C++.
+An Analytical Cellular Automata Simulator in C++.
 
 Outputs GIFs and CSV analysis of the simulation results. 
 
-![example](examples/example.gif)
 ![example](examples/example2.gif)
+![example](examples/example1.gif)
 ![example](examples/example3.gif)
 
+---
+# Analysis Files
+
+The purpose of this simulation software is not primarily to generate cool looking gifs but is instead intended to allow for a deeper level of analysis and understanding of the simulation results. 
+
+To facilitate this, the program will output not only a gif but a `<simulationName>.html` analysis file. This file includes several metrics about the results of your simulation. 
+
+![analysis gif](examples/analysis.gif)
+
+This analysis file takes advantage of the powerful JavaScript library [Charts.js](https://www.chartjs.org/) to graph the time (generational) domain analysis. All of the actual analysis is done in C++. This output file will run in your local browser without the need for a web server. Just open it with your browser of choice. The underlying data is exposed in the HTML file in a way that would make it easy to your data with other tools such as [Plotter](http://www.graphreader.com/plotter), [Desmos](https://www.desmos.com/calculator) or [MatLab](https://www.mathworks.com/products/matlab.html).
+
+---
 # Configuration
 
 The program will look for a cfg.txt file in the working directory. 
@@ -15,28 +27,90 @@ The file might look something like this:
 ```
 # Example config
 # Comments are ignored
+# Output file name
 file = life
+# Gif frame delay
 delay = 16
-frames = 128
+# Frames to render
+frames = 64
+# Generations to run before render
 pre = 0
-width = 64
-height = 64
+# Canvas width
+width = 32
+# Canvas height
+height = 32
+# Pixel / Image scale
 scale = 8
-pallet = white
-copy_cfg = 1
+# Gif color pallet
+pallet = rainbow3
+# Rule set
 rules = dstd
 ---
 # .sorg settings
 ---
-sorg = rune1
+# File to load
+sorg = 2to1
+# Center (0 or 1)
 #sorg_center = 0
+# X offset (can be negative)
 #sorg_x = 1
+# Y offset (can be negative)
 #sorg_y = 1
 ```
 
 Note: Lines beginning with `#` or `-` are ignored. So are empty lines.
 
-## Rules
+---
+
+# The `.sorg` File Type
+
+## Specifications
+- Lines beginning with `#` are comments and are ignored.
+- Spaces are removed from lines before they are read or counted
+- Each character represents one cell
+- The following characters represent a cell which is off `0`,`O`,`o`
+- Any other character aside from `#` is considered to be on
+- A line that contains # but does not start with # is an error and the file will be rejected  
+- Width is determined by counting the (string) size of the first row
+- Any row with a size greater than the first row is an error and the file will be rejected
+- Height is determined by counting the number of rows 
+
+Note: comments are really only intended to be used at the top of the file. 
+
+## Noise
+You can also generate pseudo-random noise as your starting "organism" by adding simply writing `sorg = noise`. This means that `noise`. This means that a `.sorg` file cant not be named `noise`. It is a reserved name. 
+
+## Example
+An example `.sorg` file might look like this:
+
+```
+# A simple oscillator
+1100
+1100
+0011
+0011
+```
+
+This file would be calculated to have a `width` of 4 and a `height` of 4.
+
+A more complex example might look like this:
+```
+000000000000000000111000111
+000000000000000000101000101
+000010000000000000111000111
+000111000000000000000000000
+000101000000000000000000000
+000111000000000000000000000
+000010000000000000111000111
+000000000000000000101000101
+000000000000000000111000111
+```
+
+This file would be calculated to have a `width` of 27 and a `height` of 9. 
+
+---
+
+# Rules
 There are 4 conditions for which we must specify a "rule". A rule is a combination of a condition and an "action". 
 
 Each condition relates to the amount of "neighbors" a cell has. A cell is considered to have a neighbor if another living cell is touching it on its sides or corners.
@@ -94,79 +168,32 @@ An interesting alternative to Conway's rule set is:
 dttd
 ```
 
-# The `.sorg` File Type
-
-## Specifications
-- Lines beginning with `#` are comments and are ignored.
-- Spaces are removed from lines before the are read or counted
-- Each character represents one cell
-- The following characters represent a cell which is off `0`,`O`,`o`
-- Any other character aside from `#` is considered to be on
-- A line that contains # but does not start with # is an error and the file will be rejected  
-- Width is determined by counting the (string) size of the first row
-- Any row with a size greater than the first row is an error and the file will be rejected
-- Height is determined by counting the number of rows 
-
-Note: comments are really only intended to be used at the top of the file. 
-
-## Example
-An example `.sorg` file might look like this:
+Alternate rule sets can lead to some very interesting results. For instance by using the rule set `dttd` with a starting configuration like:
 
 ```
-# A simple oscillator
-1100
-1100
-0011
-0011
+010
+111
+101
+111
+010
 ```
 
-This file would be calculated to have a `width` of 4 and a `height` of 4.
+We will get output like this:
 
-# Analysis Files
+![examples/dttd.gif](examples/dttd.gif)
 
-## Graphing Tool
-http://www.graphreader.com/plotter
+## Meta Rules
 
-## Analysis Example
-```
-generations: 128
+Meta rules are rules that exist outside the context of the cells themselves. These rules are coded into the simulation and can not be changed via the config file. 
 
-avg_age: 19.091869
+**Population Death:** A population is considered "dead" when all cells have died. There will be no meaningful data in the next generation so the simulation will stop. 
 
-avg_neighbors: 2.686716
+![examples/popdeath.gif](examples/popdeath.gif)
 
-avg_births: 32.625000
+When the population freezes, there will be an output in the terminal that indicates this. The `froze` metric in the analysis file will be set to `1`. 
 
-avg_deaths: 19.093750
+**Population Freeze:** Cells can be alive, but fully inactive. Cells in this state are called "frozen". A population is frozen when an entire generations passes without any new births or deaths. When this happens we can be sure that on any subsequent generations, there will also be no new births or deaths. And thus no new data that would care about. We can safely assume that each cell will continue living ad-infinitum and age towards infinity. When the population is frozen, the simulations stops.   
 
-final_alive: 6682
+![examples/frozen.gif](examples/frozen.gif)
 
-births: 4176
-
-deaths: 2444
-
-------- 
-
-age_vector: 
-
-1.500000, 1.777778, 1.833333, 2.000000, 1.250000, 2.111111, 2.727273, 2.700000, 2.928571, 3.583333, 3.263158, 3.000000, 2.076923, 1.866667, 2.454545, 2.250000, 2.500000, 3.250000, 2.857143, 1.500000, 1.500000, 1.750000, 1.500000, 2.000000, 1.666667, 2.111111, 2.500000, 2.428571, 2.777778, 4.000000, 3.714286, 3.777778, 5.500000, 5.000000, 4.777778, 7.000000, 6.285714, 5.777778, 8.500000, 7.571429, 6.777778, 10.000000, 8.857143, 7.777778, 11.500000, 10.142857, 8.777778, 13.000000, 11.428571, 9.777778, 14.500000, 12.714286, 10.777778, 16.000000, 14.000000, 11.777778, 17.500000, 15.285714, 12.777778, 19.000000, 16.571429, 13.777778, 20.500000, 17.857143, 14.777778, 22.000000, 19.142857, 15.777778, 23.500000, 20.428571, 16.777778, 25.000000, 21.714286, 17.777778, 26.500000, 23.000000, 18.777778, 28.000000, 24.285714, 19.777778, 29.500000, 25.571429, 20.777778, 31.000000, 26.857143, 21.777778, 32.500000, 28.142857, 22.777778, 34.000000, 29.428571, 23.777778, 35.500000, 30.714286, 24.777778, 37.000000, 32.000000, 25.777778, 38.500000, 33.285714, 26.777778, 40.000000, 34.571429, 27.777778, 41.500000, 35.857143, 28.777778, 43.000000, 37.142857, 29.777778, 44.500000, 38.428571, 30.777778, 46.000000, 39.714286, 31.777778, 47.500000, 41.000000, 32.777778, 49.000000, 42.285714, 33.777778, 50.500000, 43.571429, 34.777778, 52.000000, 44.857143, 35.777778
-
-neighbors_vector: 
-
-3.000000, 2.666667, 2.833333, 2.625000, 3.000000, 2.111111, 2.545455, 2.500000, 2.285714, 3.000000, 2.368421, 3.000000, 2.692308, 2.666667, 2.545455, 2.750000, 2.916667, 2.500000, 2.714286, 3.000000, 2.666667, 2.750000, 2.500000, 2.333333, 3.000000, 2.333333, 3.000000, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667, 2.833333, 2.571429, 2.666667
-
-births_vector:
-
-6.000000, 10.000000, 6.000000, 6.000000, 4.000000, 16.000000, 18.000000, 14.000000, 20.000000, 16.000000, 24.000000, 12.000000, 8.000000, 14.000000, 14.000000, 6.000000, 6.000000, 12.000000, 16.000000, 12.000000, 8.000000, 16.000000, 16.000000, 32.000000, 16.000000, 48.000000, 32.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000, 40.000000, 24.000000, 48.000000
-
-deaths_vector:
-
-4.000000, 2.000000, 12.000000, 6.000000, 12.000000, 0.000000, 0.000000, 8.000000, 0.000000, 12.000000, 0.000000, 26.000000, 16.000000, 12.000000, 16.000000, 16.000000, 18.000000, 12.000000, 0.000000, 16.000000, 16.000000, 8.000000, 16.000000, 0.000000, 32.000000, 0.000000, 40.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000, 32.000000, 24.000000, 8.000000
-
-alive_vector:
-
-12, 18, 12, 16, 16, 18, 22, 20, 28, 24, 38, 24, 26, 30, 22, 24, 24, 16, 28, 24, 24, 32, 32, 48, 48, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72, 48, 56, 72
-
-```
-
-More info coming soon.
+When the population dies, there will be an output in the terminal that indicates this. The `population_died` metric in the analysis file will be set to `1`. 
