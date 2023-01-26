@@ -4,7 +4,7 @@ Outputs GIFs and CSV analysis of the simulation results.
 
 ![example](examples/example2.gif)
 ![example](examples/example1.gif)
-![example](examples/example3.gif)
+<!-- ![example](examples/example3.gif) -->
 
 ---
 # Analysis Files
