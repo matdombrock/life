@@ -58,7 +58,7 @@ sorg = 2to1
 #sorg_y = 1
 ```
 
-Note: Lines beginning with `#` or `-` are ignored. So are empty lines.
+Note: Lines beginning with `#` or `-` are ignored. So are empty lines. If the same key is found more than once, it will overwrite the last value. Lines do not need to be written in any particular order. 
 
 ---
 
@@ -76,9 +76,6 @@ Note: Lines beginning with `#` or `-` are ignored. So are empty lines.
 - Height is determined by counting the number of rows 
 
 Note: comments are really only intended to be used at the top of the file. 
-
-## Noise
-You can also generate pseudo-random noise as your starting "organism" by adding simply writing `sorg = noise`. This means that `noise`. This means that a `.sorg` file cant not be named `noise`. It is a reserved name. 
 
 ## Example
 An example `.sorg` file might look like this:
@@ -107,6 +104,9 @@ A more complex example might look like this:
 ```
 
 This file would be calculated to have a `width` of 27 and a `height` of 9. 
+
+## Noise
+You can also generate pseudo-random noise as your starting "organism" by writing `sorg = noise` in your config file. This means that `noise`. This means that a `.sorg` file cant not be named `noise`. It is a reserved name. 
 
 ---
 
