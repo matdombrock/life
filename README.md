@@ -197,3 +197,11 @@ When the population freezes, there will be an output in the terminal that indica
 ![examples/frozen.gif](examples/frozen.gif)
 
 When the population dies, there will be an output in the terminal that indicates this. The `population_died` metric in the analysis file will be set to `1`. 
+
+# Other Possible Resolutions
+
+There are 2 other possible "resolutions" to the simulation. The population may continue growing forever. Or the living cells in the population may fall into a stable oscillation. 
+
+**Continued Growth:** I used quotes for the world "resolution" because this is clearly not an actual resolution. Due to the [Halting problem](https://en.wikipedia.org/wiki/Halting_problem) we also know that it is impossible to determine if this is "resolution" would actually ever "happen". This is not something we can detect, so it's there is no logic concerning this idea in the simulation. Instead we must specify an upper bound to the simulation's generation count. 
+
+**Stable Oscillation** This is a very interesting resolution. A population could be said to be oscillating in a stable way if all "active" cells in the population are part of a stable oscillation. The challenge of defining a "stable oscillation" is another matter entirely and something I'm currently very interested. That being said, I still have not come across the solution.  
