@@ -80,7 +80,9 @@ public:
     }
     void save(std::string fileNameAna, std::string fileName, std::string cfgString)
     {
+        CLIO::print("Building HTML...");
         std::string out = HTML::buildHTML(data, fileName, cfgString);   
+        CLIO::print("Writing HTML...");
         FileIO::write(fileNameAna, out);
     }
 

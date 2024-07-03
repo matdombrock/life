@@ -23,36 +23,36 @@ public:
     int sorgXOff = 0;
     int sorgYOff = 0;
     char ruleSet[4] = {'d','s','t','d'};// game of life = {'d','s','t','d'}
-    std::string toString()
+    std::string toString(bool comments = true)
     {
         std::string str = "";
-        str += "# Output file name \n";
+        if (comments) str += "# Output file name \n";
         str += "file = " + fileName + "\n \n";
-        str += "# Gif frame delay (ms) \n";
+        if (comments) str += "# Gif frame delay (ms) \n";
         str += "delay = " + std::to_string(delay) + "\n \n";
-        str += "# Frames to render \n";
+        if (comments) str += "# Frames to render \n";
         str += "frames = " + std::to_string(frames) + "\n \n";
-        str += "# Generations to run before render \n";
+        if (comments) str += "# Generations to run before render \n";
         str += "pre = " + std::to_string(pre) + "\n \n";
-        str += "# Image / Simulation width \n";
+        if (comments) str += "# Image / Simulation width \n";
         str += "width = " + std::to_string(width) + "\n \n";
-        str += "# Image / Simulation height \n";
+        if (comments) str += "# Image / Simulation height \n";
         str += "height = " + std::to_string(height) + "\n \n";
-        str += "# Scale image up N times \n";
+        if (comments) str += "# Scale image up N times \n";
         str += "scale = " + std::to_string(scale) + "\n \n";
-        str += "# Color palette \n";
-        str += "# white | grey | yellow | ruby | barney | slime | earth | lime | rainbow | rainbow2 | rainbow3 | red | green | blue \n";
+        if (comments) str += "# Color palette \n";
+        if (comments) str += "# white | grey | yellow | ruby | barney | slime | earth | lime | rainbow | rainbow2 | rainbow3 | red | green | blue \n";
         str += "palette = " + palette + "\n \n";
-        str += "# Rules set (dstd) \n";
+        if (comments) str += "# Rules set (dstd) \n";
         str += "rules = " + std::string(ruleSet, 4) + " \n \n";
-        str += "---\n# Organism settings:\n---\n";
-        str += "# Organism file to load (*.sorg) \n";
+        if (comments) str += "---\n# Organism settings:\n---\n";
+        if (comments) str += "# Organism file to load (*.sorg) \n";
         str += "sorg = " + sorg + "\n \n";
-        str += "# Center (0|1) \n";
+        if (comments) str += "# Center (0|1) \n";
         str += "sorg_center = " + std::to_string(sorgCenter) + "\n \n";
-        str += "# X offset (can be negative) \n";
+        if (comments) str += "# X offset (can be negative) \n";
         str += "sorg_x = " + std::to_string(sorgXOff) + "\n \n";
-        str += "# Y offset (can be negative) \n";
+        if (comments) str += "# Y offset (can be negative) \n";
         str += "sorg_y = " + std::to_string(sorgYOff) + "\n \n";
         return str;
     }

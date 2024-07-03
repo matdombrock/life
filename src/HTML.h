@@ -3,6 +3,7 @@
 #include <vector>
 #include "util/StringTools.h"
 #include "util/FileIO.h"
+#include "util/CLIO.h"
 #include "AnalysisData.h"
 typedef std::vector<double> dvec;
 
@@ -12,6 +13,7 @@ class HTML
 public:
     static std::string buildHTML(AnalysisData data, std::string fileName, std::string cfgString)
     {
+        CLIO::print("Strigfying vectors (can be slow)...");
         std::string birthsVecS = StringTools::vecToString(data.birthsVec);
         std::string deathsVecS = StringTools::vecToString(data.deathsVec);
         std::string aliveVecS = StringTools::vecToString(data.aliveVec);
@@ -26,6 +28,7 @@ public:
         }
         std::string xValsS = StringTools::vecToString(xVals);
 
+        CLIO::print("Concatenating HTML...");
         std::string out = "";
         out += R"(
 <head>

@@ -123,9 +123,11 @@ int main(int argc, char* argv[])
         }
 	}
 
+    CLIO::print("Finalizing data...");
 	GifEnd(&g);
     finalAnalysis.finalize();
-    finalAnalysis.save(fileNameAna, fileName, cfg.toString());
+    CLIO::print("Saving analysis files...");
+    finalAnalysis.save(fileNameAna, fileName, cfg.toString(false));
 
     CLIO::print("---");
     CLIO::print("DONE!");
