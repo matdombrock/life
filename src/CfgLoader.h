@@ -91,7 +91,7 @@ public:
             std::string val = line.substr(delimiterIndex + 1, line.size() - 1);
             if (key == "file")
             {
-                //cfg.fileName = val.c_str();
+                cfg.fileName = val.c_str();
             }
             else if (key == "delay")
             {

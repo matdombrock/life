@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
 
 	GifEnd(&g);
     finalAnalysis.finalize();
-    finalAnalysis.save(fileNameAna, fileName);
+    finalAnalysis.save(fileNameAna, fileName, cfg.toString());
 
     CLIO::print("---");
     CLIO::print("DONE!");
