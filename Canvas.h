@@ -4,7 +4,7 @@ Inherits the matrix class
 */
 #include <vector>
 #include "Matrix.h"
-#include "RGB.h"
+#include "Pixel.h"
 
 class Canvas : public Matrix
 {
@@ -16,7 +16,7 @@ public:
         ds = 4;
         ps = scale;
     }
-    void draw(int x, int y, RGB rgb = RGB())
+    void draw(int x, int y, Pixel rgb = Pixel())
     {
         x*=ps;// adjust for scale
         y*=ps;// adjust for scale
@@ -28,7 +28,7 @@ public:
             }
         }
     }
-    void draw(int n, RGB rgb = RGB())
+    void draw(int n, Pixel rgb = Pixel())
     {
         int x = n % w;
         int y = n / h;

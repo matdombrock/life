@@ -55,8 +55,8 @@ int main()
     std::time_t t = std::time(0);  // t is an integer type
 
     std::string fileName = cfg.fileName + std::to_string(t);// need to add timestamp
-    std::string fileNameGif = "out/" + fileName + ".gif";
-    std::string fileNameAna = "out/" + fileName + ".html";
+    std::string fileNameGif = "./out/" + fileName + ".gif";
+    std::string fileNameAna = "./out/" + fileName + ".html";
 
     int outputW = cfg.width * cfg.scale;
     int outputH = cfg.height * cfg.scale;
@@ -87,7 +87,7 @@ int main()
             if (dishBuffer[ii] > 0)
             {
                 std::vector<uint8_t> pixel = Colorizer::colorPixel(dishBuffer[ii], cfg.pallet);
-                RGB rgb;
+                Pixel rgb;
                 rgb.r = pixel[0];
                 rgb.g = pixel[1];
                 rgb.b = pixel[2];

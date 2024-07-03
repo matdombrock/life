@@ -9,7 +9,7 @@ This is the basic building block for the simulation as well as the graphics outp
 #include <iostream>
 #include <vector>
 #include <cstdint>
-#include "RGB.h"
+#include "Pixel.h"
 #include "util/CLIO.h"
 
 class Matrix
@@ -39,12 +39,12 @@ public:
     }
     int getWidth() {return w;};
     int getHeight() {return h;};
-    void writeXY(int x, int y, RGB rgb = RGB())
+    void writeXY(int x, int y, Pixel rgb = Pixel())
     {
         int index = getIndex(x,y);
         writeAtIndex(index, rgb);
     }
-    void writeN(int n, RGB rgb = RGB())
+    void writeN(int n, Pixel rgb = Pixel())
     {
         n *= ds;
         writeAtIndex(n, rgb);
@@ -69,7 +69,7 @@ private:
         y*=ds;
         return (w*y)+x;
     }
-    void writeAtIndex(int n, RGB rgb = RGB())
+    void writeAtIndex(int n, Pixel rgb = Pixel())
     {
         if(ds == 1)
         {

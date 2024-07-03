@@ -158,7 +158,7 @@ public:
             }
             //
             //std::vector<uint8_t> data = {cellState};
-            RGB rgb;
+            Pixel rgb;
             rgb.r = cellState;
             matrix2.writeN(i, rgb);
         }
@@ -167,12 +167,12 @@ public:
         matrix.clone(matrix2);
         return analysis;
     }
-    void alive(int x, int y, RGB rgb = RGB())
+    void alive(int x, int y, Pixel rgb = Pixel())
     {
         int index = getIndex(x, y);
         aliveAtIndex(index, rgb);
     }
-    void alive(int n, RGB rgb = RGB())
+    void alive(int n, Pixel rgb = Pixel())
     {
         aliveAtIndex(n, rgb);
     }
@@ -206,7 +206,7 @@ private:
     {
         return (w * y) + x;
     }
-    void aliveAtIndex(int n, RGB rgb = RGB())
+    void aliveAtIndex(int n, Pixel rgb = Pixel())
     {
         matrix.writeN(n, rgb);
     }
