@@ -12,17 +12,17 @@ It also holds logic for generating gifs
 #include <iostream>
 #include <math.h>
 #include <ctime>
-#include "includes/gif.h"
-#include "src/Matrix.h"
-#include "src/Canvas.h"
-#include "src/Petri.h"
-#include "src/Organism.h"
-#include "src/SorgLoader.h"
-#include "src/CfgLoader.h"
-#include "src/Analysis.h"
-#include "src/util/Colorizer.h"
-#include "src/util/CLIO.h"
-#include "src/util/FileIO.h"
+#include "../includes/gif.h"
+#include "Matrix.h"
+#include "Canvas.h"
+#include "Petri.h"
+#include "Organism.h"
+#include "SorgLoader.h"
+#include "CfgLoader.h"
+#include "Analysis.h"
+#include "util/Colorizer.h"
+#include "util/CLIO.h"
+#include "util/FileIO.h"
 
 void init(Petri &dish, Cfg cfg, time_t t)
 {
@@ -65,7 +65,6 @@ int main()
     Canvas canvas(cfg.width, cfg.height, cfg.scale);
     
     // Empty first frame
-    //drawFrame1(canvas, cfg);
     auto frame = canvas.getBuffer();
     GifWriteFrame(&g, frame.data(), outputW, outputH, cfg.delay);
     

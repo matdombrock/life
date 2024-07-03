@@ -17,6 +17,17 @@ To facilitate this, the program will output not only a gif but a `<simulationNam
 
 This analysis file takes advantage of the powerful JavaScript library [Charts.js](https://www.chartjs.org/) to graph the time (generational) domain analysis. All of the actual analysis is done in C++. This output file will run in your local browser without the need for a web server. Just open it with your browser of choice. The underlying data is exposed in the HTML file in a way that would make it easy analyze to your data with other tools such as [Plotter](http://www.graphreader.com/plotter), [Desmos](https://www.desmos.com/calculator) or [MatLab](https://www.mathworks.com/products/matlab.html).
 
+## Linux Sandboxing
+Flatpak apps are sandboxed from your local files. If you try to open an HTML file and the URL turns into something like this:
+`file:///run/user/1000/doc/dd51a6de/life1719990713.html`
+
+You are sandboxed. This means you wont be able to load the local gif files. 
+
+There are a few solutions:
+- Move the repo do `~/Downloads` which is accessible by Flatpak browsers.
+- Install a browser from `apt` or another package manager.
+- Run a local web server.
+
 ---
 # Configuration
 

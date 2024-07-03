@@ -2,3 +2,4 @@ out/
 *.exe
 life
 cfg.txt
+nohup.out
