@@ -12,7 +12,7 @@ It also holds logic for generating gifs
 #include <iostream>
 #include <math.h>
 #include <ctime>
-#include "lib/gif.h"
+#include "includes/gif.h"
 #include "Matrix.h"
 #include "Canvas.h"
 #include "Petri.h"
