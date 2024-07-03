@@ -20,8 +20,6 @@ public:
         w = width;
         h = height;
         ds = dataSize;
-        //std::vector<uint8_t> ds1 = {1};
-        //std::vector<uint8_t> ds4 = {255,255,255};
         buffer.resize(w * h * dataSize);
         std::fill(buffer.begin(), buffer.end(), 0);
     }
