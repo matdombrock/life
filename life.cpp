@@ -87,7 +87,11 @@ int main()
             if (dishBuffer[ii] > 0)
             {
                 std::vector<uint8_t> pixel = Colorizer::colorPixel(dishBuffer[ii], cfg.pallet);
-                canvas.draw(ii, pixel);
+                RGB rgb;
+                rgb.r = pixel[0];
+                rgb.g = pixel[1];
+                rgb.b = pixel[2];
+                canvas.draw(ii, rgb);
             }
         }
         GenerationAnalysis analysis = dish.nextGen();

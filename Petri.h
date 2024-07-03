@@ -157,22 +157,24 @@ public:
                 analysis.setNeighbors(neighbors);
             }
             //
-            std::vector<uint8_t> data = {cellState};
-            matrix2.writeN(i, data);
+            //std::vector<uint8_t> data = {cellState};
+            RGB rgb;
+            rgb.r = cellState;
+            matrix2.writeN(i, rgb);
         }
         analysis.finalize();
         // copy the buffer back to the original
         matrix.clone(matrix2);
         return analysis;
     }
-    void alive(int x, int y, std::vector<uint8_t> data = {1})
+    void alive(int x, int y, RGB rgb = RGB())
     {
         int index = getIndex(x, y);
-        aliveAtIndex(index, data);
+        aliveAtIndex(index, rgb);
     }
-    void alive(int n, std::vector<uint8_t> data = {1})
+    void alive(int n, RGB rgb = RGB())
     {
-        aliveAtIndex(n, data);
+        aliveAtIndex(n, rgb);
     }
     void loadOrganism(Organism organism, int xOff = 0, int yOff = 0, bool center = true)
     {
@@ -200,12 +202,12 @@ private:
     Matrix matrix;
     Matrix matrix2;
     char ruleSet[4];
-    int getIndex(int x, int y, std::vector<uint8_t> data = {1})
+    int getIndex(int x, int y)
     {
         return (w * y) + x;
     }
-    void aliveAtIndex(int n, std::vector<uint8_t> data = {1})
+    void aliveAtIndex(int n, RGB rgb = RGB())
     {
-        matrix.writeN(n, data);
+        matrix.writeN(n, rgb);
     }
 };

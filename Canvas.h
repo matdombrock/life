@@ -4,6 +4,7 @@ Inherits the matrix class
 */
 #include <vector>
 #include "Matrix.h"
+#include "RGB.h"
 
 class Canvas : public Matrix
 {
@@ -15,7 +16,7 @@ public:
         ds = 4;
         ps = scale;
     }
-    void draw(int x, int y, std::vector<uint8_t> rgb = {255,255,255})
+    void draw(int x, int y, RGB rgb = RGB())
     {
         x*=ps;// adjust for scale
         y*=ps;// adjust for scale
@@ -27,7 +28,7 @@ public:
             }
         }
     }
-    void draw(int n, std::vector<uint8_t> rgb = {255,255,255})
+    void draw(int n, RGB rgb = RGB())
     {
         int x = n % w;
         int y = n / h;

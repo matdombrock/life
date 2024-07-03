@@ -9,6 +9,7 @@ This is the basic building block for the simulation as well as the graphics outp
 #include <iostream>
 #include <vector>
 #include <cstdint>
+#include "RGB.h"
 #include "util/CLIO.h"
 
 class Matrix
@@ -19,9 +20,8 @@ public:
         w = width;
         h = height;
         ds = dataSize;
-        std::vector<uint8_t> ds1 = {1};
-        std::vector<uint8_t> ds4 = {255,255,255};
-        defaultData = dataSize == 1 ? ds1 : ds4;
+        //std::vector<uint8_t> ds1 = {1};
+        //std::vector<uint8_t> ds4 = {255,255,255};
         buffer.resize(w * h * dataSize);
         std::fill(buffer.begin(), buffer.end(), 0);
     }
@@ -39,17 +39,15 @@ public:
     }
     int getWidth() {return w;};
     int getHeight() {return h;};
-    void writeXY(int x, int y, std::vector<uint8_t> data = {})
+    void writeXY(int x, int y, RGB rgb = RGB())
     {
-        if (data.empty()){data = defaultData;}
         int index = getIndex(x,y);
-        writeAtIndex(index, data);
+        writeAtIndex(index, rgb);
     }
-    void writeN(int n, std::vector<uint8_t> data = {})
+    void writeN(int n, RGB rgb = RGB())
     {
-        if (data.empty()){data = defaultData;}
         n *= ds;
-        writeAtIndex(n, data);
+        writeAtIndex(n, rgb);
     }
     uint8_t read(int x, int y)
     {
@@ -71,25 +69,20 @@ private:
         y*=ds;
         return (w*y)+x;
     }
-    void writeAtIndex(int n, std::vector<uint8_t> data)
+    void writeAtIndex(int n, RGB rgb = RGB())
     {
         if(ds == 1)
         {
             // This is a single item data point
-            buffer[n] = data[0];
+            buffer[n] = rgb.r;
         }
         else if(ds == 4)
         {
-            // There are 4 items per pixel
             // RGBA
-            // ensure that data is the right size
-            if (data.size() >= 3)
-            {
-                buffer[n] = data[0];
-                buffer[n+1] = data[1];
-                buffer[n+2] = data[2];
-                buffer[n+3] = 255;// Alpha is not supported
-            }
+            buffer[n] = rgb.r;
+            buffer[n+1] = rgb.g;
+            buffer[n+2] = rgb.g;
+            buffer[n+3] = 255;// Alpha not supported
         }
         else
         {
