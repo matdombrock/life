@@ -5,55 +5,55 @@
 class Colorizer
 {
 public:
-    static std::vector<uint8_t> colorPixel(uint8_t val, std::string pallet = "white")
+    static std::vector<uint8_t> colorPixel(uint8_t val, std::string palette = "white")
     {
         std::vector<uint8_t> pixel = {255,255,255};
-        if (pallet == "white")
+        if (palette == "white")
         {
             // Do nothing, white is the default
         }
-        else if (pallet == "grey")
+        else if (palette == "grey")
         {
             uint8_t color = 100 + (colorUp(val)/2);
             pixel = {color, color, color};
         }
-        else if (pallet == "yellow")
+        else if (palette == "yellow")
         {
             uint8_t color = colorUp(val);
             uint8_t color2 = colorDown(val);
             pixel = {color2, 255, color};
         }
-        else if (pallet == "ruby")
+        else if (palette == "ruby")
         {
             uint8_t color = colorUp(val);
             uint8_t color2 = colorDown(val);
             pixel = {color2, color, color};
         }
-        else if (pallet == "barney")
+        else if (palette == "barney")
         {
             uint8_t color = colorUp(val);
             uint8_t color2 = colorDown(val);
             pixel = {color2, color, color2};
         }
-        else if (pallet == "slime")
+        else if (palette == "slime")
         {
             uint8_t color = colorUp(val);
             uint8_t color2 = colorDown(val);
             pixel = {color, color2, color};
         }
-        else if (pallet == "earth")
+        else if (palette == "earth")
         {
             uint8_t color = colorUp(val);
             uint8_t color2 = colorDown(val);
             pixel = {color, 64, color2};
         }
-        else if (pallet == "lime")
+        else if (palette == "lime")
         {
             uint8_t color = colorUp(val);
             uint8_t color2 = colorDown(val);
             pixel = {color, 255, color};
         }
-        else if (pallet == "rainbow")
+        else if (palette == "rainbow")
         {
             if(val > 6)
             {
@@ -84,7 +84,7 @@ public:
                 pixel = {255, 255, 255};
             }
         }
-        else if (pallet == "rainbow2")
+        else if (palette == "rainbow2")
         {
             if(val > 6)
             {
@@ -115,7 +115,7 @@ public:
                 pixel = {255, 255, 255};
             }
         }
-        else if (pallet == "rainbow3")
+        else if (palette == "rainbow3")
         {
             if(val > 6)
             {
@@ -146,17 +146,17 @@ public:
                 pixel = {0, 255, 0};
             }
         }
-        else if (pallet == "red")
+        else if (palette == "red")
         {
             uint8_t color = colorUp(val);
             pixel = {255, color, color};
         }
-        else if (pallet == "green")
+        else if (palette == "green")
         {
             uint8_t color = colorUp(val);
             pixel = {color, 255, color};
         }
-        else if (pallet == "blue")
+        else if (palette == "blue")
         {
             uint8_t color = colorUp(val);
             uint8_t color2 = colorDown(val);

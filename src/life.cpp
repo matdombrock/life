@@ -45,9 +45,11 @@ void drawFrame1(Canvas &canvas, Cfg cfg)
     canvas.draw(cfg.width-1,cfg.height-1);
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    Cfg cfg = CfgLoader::load();
+    std::string cfgPath = "./cfg.txt";
+    if (argc > 1) cfgPath = argv[1];
+    Cfg cfg = CfgLoader::load(cfgPath);
 
     GifWriter g;
 
@@ -85,7 +87,7 @@ int main()
         {
             if (dishBuffer[ii] > 0)
             {
-                std::vector<uint8_t> pixel = Colorizer::colorPixel(dishBuffer[ii], cfg.pallet);
+                std::vector<uint8_t> pixel = Colorizer::colorPixel(dishBuffer[ii], cfg.palette);
                 Pixel rgb;
                 rgb.r = pixel[0];
                 rgb.g = pixel[1];

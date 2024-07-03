@@ -6,6 +6,26 @@ Outputs GIFs and CSV analysis of the simulation results.
 ![example](examples/example1.gif)
 <!-- ![example](examples/example3.gif) -->
 
+# Build & Run
+## Building
+```bash
+make life
+```
+**Note:** Before building, make sure you have a modern version of the G++ compiler installed. 
+
+## Running
+
+Syntax:
+```
+./life [?cfg_file]
+```
+
+Usage Examples:
+```
+./life
+./life myCFG.txt
+```
+
 ---
 # Analysis Files
 
@@ -31,9 +51,9 @@ There are a few solutions:
 ---
 # Configuration
 
-The program will look for a cfg.txt file in the working directory. 
+Configuration files are automatically created when you run `./life cfg-file-name`. If the config file exists it will be loaded, if not it will be created. You can omit the file name to default to `cfg.txt`.  
 
-The file might look something like this:
+A config file looks something like this:
 
 ```
 # Example config
@@ -52,8 +72,8 @@ width = 32
 height = 32
 # Pixel / Image scale
 scale = 8
-# Gif color pallet
-pallet = rainbow3
+# Gif color palette
+palette = rainbow3
 # Rule set
 rules = dstd
 ---
@@ -69,7 +89,10 @@ sorg = 2to1
 #sorg_y = 1
 ```
 
-Note: Lines beginning with `#` or `-` are ignored. So are empty lines. If the same key is found more than once, it will overwrite the last value. Lines do not need to be written in any particular order. 
+**Notes:** 
+- Lines beginning with `#` or `-` are ignored. So are empty lines. 
+- If the same key is found more than once, it will use the latter value. 
+- Lines do not need to be written in any particular order. 
 
 ---
 
