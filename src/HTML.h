@@ -11,18 +11,25 @@ typedef std::vector<double> dvec;
 class HTML
 {
 public:
-    static std::string buildHTML(AnalysisData data, std::string fileName, std::string cfgString)
+    static std::string buildHTML(AnalysisData* data, std::string fileName, std::string cfgString)
     {
-        CLIO::print("Strigfying vectors (can be slow)...");
-        std::string birthsVecS = StringTools::vecToString(data.birthsVec);
-        std::string deathsVecS = StringTools::vecToString(data.deathsVec);
-        std::string aliveVecS = StringTools::vecToString(data.aliveVec);
-        std::string ageVecS = StringTools::vecToString(data.ageVec);
-        std::string peakAgeVecS = StringTools::vecToString(data.peakAgeVec);
-        std::string neighborsVecS = StringTools::vecToString(data.neighborsVec);
+        int vsize = data->birthsVec.size();
+        vsize += data->deathsVec.size();
+        vsize += data->aliveVec.size();
+        vsize += data->ageVec.size();
+        vsize += data->peakAgeVec.size();
+        vsize += data->neighborsVec.size();
+        CLIO::print("Strigfying vectors (" + std::to_string(vsize) + ")...");
+        std::string birthsVecS = StringTools::vecToString(data->birthsVec);
+        std::string deathsVecS = StringTools::vecToString(data->deathsVec);
+        std::string aliveVecS = StringTools::vecToString(data->aliveVec);
+        std::string ageVecS = StringTools::vecToString(data->ageVec);
+        std::string peakAgeVecS = StringTools::vecToString(data->peakAgeVec);
+        std::string neighborsVecS = StringTools::vecToString(data->neighborsVec);
 
+        CLIO::print("Building X vals (" + std::to_string(data->generationsCount) + ")...");
         std::vector<int> xVals;
-        for (int i = 0; i < data.generationsCount; i++)
+        for (int i = 0; i < data->generationsCount; i++)
         {
             xVals.push_back(i);
         }
@@ -142,17 +149,17 @@ Chart.defaults.global.defaultFontColor = "#fff";
         out += "Final Analysis: </br>";
         out += "--- </br>";
         out += "</br>";
-        out += "generations: " + std::to_string(data.generationsCount) + "</br>";
-        out += "peak_age: " + std::to_string(data.peakAge) + "</br>";
-        out += "avg_age: " + std::to_string(data.avgAge) + "</br>";
-        out += "avg_neighbors: " + std::to_string(data.avgNeighbors) + "</br>";
-        out += "avg_births: " + std::to_string(data.avgBirths) + "</br>";
-        out += "avg_deaths: " + std::to_string(data.avgDeaths) + "</br>";
-        out += "final_alive: " + std::to_string(data.finalAlive) + "</br>";
-        out += "births: " + std::to_string(data.births) + "</br>";
-        out += "deaths: " + std::to_string(data.deaths) + "</br>";
-        out += "froze: " + std::to_string(data.frozen) + "</br>";
-        out += "population_died: " + std::to_string(data.popDeath) + "</br>";
+        out += "generations: " + std::to_string(data->generationsCount) + "</br>";
+        out += "peak_age: " + std::to_string(data->peakAge) + "</br>";
+        out += "avg_age: " + std::to_string(data->avgAge) + "</br>";
+        out += "avg_neighbors: " + std::to_string(data->avgNeighbors) + "</br>";
+        out += "avg_births: " + std::to_string(data->avgBirths) + "</br>";
+        out += "avg_deaths: " + std::to_string(data->avgDeaths) + "</br>";
+        out += "final_alive: " + std::to_string(data->finalAlive) + "</br>";
+        out += "births: " + std::to_string(data->births) + "</br>";
+        out += "deaths: " + std::to_string(data->deaths) + "</br>";
+        out += "froze: " + std::to_string(data->frozen) + "</br>";
+        out += "population_died: " + std::to_string(data->popDeath) + "</br>";
         out += "</p>";
 
         out += "</br>";
